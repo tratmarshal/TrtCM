@@ -484,8 +484,8 @@
 <div class="container">
   <div class="system-card">
     <div class="header">
-      <div class="system-title">WARRANT TRACKER</div>
-      <div class="system-subtitle">Criminal Warrant Intelligence System</div>
+      <div class="system-title">WARRANT TRACKER SYSTEM</div>
+      <div class="system-subtitle">ระบบสืบค้นหมายจับ</div>
     </div>
 
     <!-- Minimalist User Bar -->
@@ -567,18 +567,18 @@
       resultDiv.innerHTML = `<div class="success-box"><i class="fas fa-check-circle"></i> ${message}</div>`;
     } else if (type === "table" && data) {
       if (data.length === 0) {
-        resultDiv.innerHTML = `<div class="info-box"><i class="fas fa-search"></i> ไม่พบประวัติหมายจับสำหรับข้อมูลที่ระบุ</div>`;
+        resultDiv.innerHTML = `<div class="info-box"><i class="fas fa-search"></i> ไม่พบข้อมูลในระบบ</div>`;
         return;
       }
       
       let html = `
         <div class="result-title">
-          <i class="fas fa-database"></i> พบข้อมูลในฐานประวัติ ${data.length} รายการ
+          <i class="fas fa-database"></i> พบข้อมูล ${data.length} รายการ
         </div>
         <div class="table-container">
           <table class="result-table">
             <thead>
-              <tr><th>เลขที่หมายจับ</th><th>ชื่อ-สกุล</th><th>สถานะทางการคดี</th></tr>
+              <tr><th>หมายจับ</th><th>ชื่อ-สกุล</th><th>สถานะ</th></tr>
             </thead>
             <tbody>
       `;
