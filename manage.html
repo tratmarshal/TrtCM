@@ -1,373 +1,298 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>จัดการหมายจับ</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-        }
-        body {
-            background: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        h1 {
-            font-size: 24px;
-            color: #1e3a5f;
-            margin-top: 0;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-        th, td {
-            text-align: left;
-            padding: 12px 8px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        th {
-            background: #f1f5f9;
-        }
-        .status-badge {
-            background: #e9ecef;
-            padding: 4px 10px;
-            border-radius: 40px;
-            font-size: 12px;
-            display: inline-block;
-        }
-        .btn-edit {
-            background: #2c7da0;
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        .btn-add {
-            background: #1e3a5f;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: white;
-            max-width: 500px;
-            width: 90%;
-            border-radius: 28px;
-            padding: 24px;
-        }
-        select, input {
-            width: 100%;
-            padding: 12px;
-            margin: 12px 0;
-            border-radius: 16px;
-            border: 1px solid #ccc;
-        }
-        button {
-            cursor: pointer;
-        }
-        .loading {
-            text-align: center;
-            padding: 40px;
-        }
-        .error {
-            background: #fee2e2;
-            padding: 12px;
-            border-radius: 16px;
-            color: #b91c1c;
-        }
-        .info {
-            background: #e6f7ff;
-            padding: 12px;
-            border-radius: 16px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>จัดการหมายจับ | Warrant Tracker</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 32px;
+      padding: 28px 24px;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.3);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+      border-radius: 24px;
+      margin-bottom: 24px;
+    }
+
+    .profile-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .status-badge {
+      background: #10b981;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-left: auto;
+    }
+
+    .btn-add {
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 40px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-add:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      padding: 14px 12px;
+      background: #f8fafc;
+      font-weight: 600;
+      color: #1e293b;
+      font-size: 13px;
+    }
+
+    td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 14px;
+    }
+
+    .status-chip {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-progress { background: #dbeafe; color: #1e40af; }
+    .status-done { background: #d1fae5; color: #065f46; }
+
+    .btn-edit {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .btn-edit:hover {
+      background: #2563eb;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      z-index: 10001;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 32px;
+      max-width: 500px;
+      width: 90%;
+      padding: 28px;
+    }
+
+    .modal-content h3 {
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+
+    .modal-content input, .modal-content select {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 20px;
+      margin: 12px 0;
+      font-size: 14px;
+    }
+
+    .modal-content button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #f59e0b;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .info-box, .error-box {
+      padding: 20px;
+      border-radius: 20px;
+      text-align: center;
+    }
+
+    .info-box { background: #eff6ff; color: #1e40af; }
+    .error-box { background: #fef2f2; color: #dc2626; }
+
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
+
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="spinner"></div>
+</div>
+
 <div class="container">
-    <div class="card">
-        <h1>📋 จัดการรายการดำเนินการ</h1>
-        <div id="pendingList">
-            <div class="loading">กำลังโหลดข้อมูล...</div>
-        </div>
-        <button class="btn-add" id="addProcessBtn">+ เพิ่มรายการดำเนินการ</button>
+  <div class="glass-card">
+    <div class="header">
+      <h1><i class="fas fa-tasks"></i> จัดการหมายจับ</h1>
     </div>
+
+    <div id="profileSection" class="profile-section hidden">
+      <div class="profile-avatar" id="profileAvatar"><i class="fas fa-user"></i></div>
+      <div><strong id="userName">-</strong><br><small id="userIdDisplay">กำลังโหลด...</small></div>
+      <div class="status-badge"><i class="fas fa-check-circle"></i> เจ้าหน้าที่</div>
+    </div>
+
+    <button class="btn-add" id="addProcessBtn"><i class="fas fa-plus-circle"></i> เพิ่มรายการดำเนินการ</button>
+
+    <div id="pendingList">
+      <div class="info-box"><i class="fas fa-spinner fa-pulse"></i> กำลังโหลดข้อมูล...</div>
+    </div>
+  </div>
 </div>
 
-<!-- Modal สำหรับเพิ่มรายการ -->
+<!-- Modal เพิ่มรายการ -->
 <div id="addModal" class="modal">
-    <div class="modal-content">
-        <h3>➕ เพิ่มรายการดำเนินการ</h3>
-        <label>เลข 13 หลัก:</label>
-        <input type="text" id="modalId13" placeholder="กรอก 13 หลัก">
-        <label>เหตุผล:</label>
-        <input type="text" id="modalReason" placeholder="เช่น ตำรวจจับ / มอบตัว">
-        <button id="confirmAddBtn" style="background:#1e3a5f;color:white;width:100%;">ยืนยัน</button>
-        <button id="closeModalBtn" style="margin-top:8px;background:#ccc;width:100%;">ยกเลิก</button>
-    </div>
+  <div class="modal-content">
+    <h3><i class="fas fa-plus-circle"></i> เพิ่มรายการดำเนินการ</h3>
+    <input type="text" id="modalId13" placeholder="เลข 13 หลัก (13 ตัว)" maxlength="13">
+    <input type="text" id="modalReason" placeholder="เหตุผล (เช่น ตำรวจจับ, มอบตัว)">
+    <button id="confirmAddBtn" style="background: linear-gradient(135deg,#f59e0b,#ef4444);color:white;">ยืนยัน</button>
+    <button id="closeModalBtn" style="background:#e2e8f0;">ยกเลิก</button>
+  </div>
 </div>
 
-<!-- Modal สำหรับแก้ไขสถานะ -->
+<!-- Modal แก้ไขสถานะ -->
 <div id="editModal" class="modal">
-    <div class="modal-content">
-        <h3>✏️ แก้ไขสถานะ</h3>
-        <p id="editProcessId" style="display:none;"></p>
-        <label>สถานะใหม่:</label>
-        <select id="editStatusSelect">
-            <option>เสนอผู้พิพากษา</option>
-            <option>รอหมายศาล</option>
-            <option>รอประสานงาน</option>
-            <option>อยู่ระหว่างติดตามตัว</option>
-            <option>เสร็จสิ้น</option>
-        </select>
-        <button id="confirmEditBtn" style="background:#2c7da0;color:white;width:100%;">บันทึก</button>
-        <button id="closeEditModalBtn" style="margin-top:8px;background:#ccc;width:100%;">ยกเลิก</button>
-    </div>
-</div>
-
-<script>
-    // ========== ต้องแก้ไข ==========
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxQJvzBmxO09-N4smPuJS4JwS5U8rM738fJRkWFXs-r-sVA-myuLPxjIqZJHj5Y_62fEg/exec";  // จะใส่ทีหลัง
-    const LIFF_ID = "2010276759-IZoVxJjH";
-    // ==============================
-    
-    let accessToken = null;
-    let userId = null;
-    
-        async function initLiff() {
-        try {
-            await liff.init({ liffId: LIFF_ID });
-            
-            // ตรวจสอบว่า LIFF init สำเร็จไหม
-            if (!liff.isLoggedIn()) {
-                liff.login();
-                return false;
-            }
-            
-            // ดึงข้อมูลผู้ใช้
-            const profile = await liff.getProfile();
-            userId = profile.userId;
-            accessToken = liff.getAccessToken();
-            console.log("Login success:", userId);
-            return true;
-            
-        } catch(error) {
-            // 🔴 ถ้าเชื่อมต่อ LINE ไม่ได้ ให้แสดง User ID (ถ้ามี)
-            console.error("LIFF Error:", error);
-            showUserIdDebug("เชื่อมต่อ LINE ไม่สำเร็จ", error);
-            return false;
-        }
-    }
-    
-    // ✅ ฟังก์ชันใหม่: แสดง User ID เพื่อแจ้งแอดมิน
-    function showUserIdDebug(message, error = null) {
-        let debugHtml = `
-            <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 16px; padding: 20px; margin: 20px 0;">
-                <div style="color: #856404; font-weight: bold; margin-bottom: 12px;">
-                    ⚠️ ${message}
-                </div>
-                <div style="background: #1e1e2f; color: #50fa7b; padding: 16px; border-radius: 12px; font-family: monospace; font-size: 13px; word-break: break-all;">
-                    <strong>🔍 ข้อมูลสำหรับแอดมิน:</strong><br>
-                    User ID ของคุณ: <span style="color: #ffb86c; font-weight: bold;" id="debugUserId">กำลังโหลด...</span><br>
-                    <span style="font-size: 12px; color: #888;">📌 กรุณาส่ง User ID นี้ให้แอดมินเพื่อขอสิทธิ์เข้าใช้งาน</span>
-                </div>
-                <div style="margin-top: 12px;">
-                    <button onclick="copyDebugUserId()" style="background: #ffc107; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">📋 คัดลอก User ID</button>
-                    <button onclick="location.reload()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">⟳ ลองใหม่</button>
-                </div>
-            </div>
-        `;
-        
-        // แสดงผลตรง resultArea
-        const resultDiv = document.getElementById("resultArea");
-        if (resultDiv) {
-            resultDiv.innerHTML = debugHtml;
-        }
-        
-        // พยายามดึง User ID จาก LIFF (ถ้ายังพอมี)
-        if (liff && liff.isLoggedIn && liff.isLoggedIn()) {
-            liff.getProfile().then(profile => {
-                document.getElementById("debugUserId").innerText = profile.userId;
-            }).catch(() => {
-                document.getElementById("debugUserId").innerText = "ไม่สามารถดึง User ID ได้ (ยังไม่ได้ Login LINE)";
-            });
-        } else {
-            document.getElementById("debugUserId").innerText = "ไม่สามารถดึง User ID ได้ (กรุณา Login LINE ก่อน)";
-        }
-    }
-    
-    function copyDebugUserId() {
-        const userIdText = document.getElementById("debugUserId").innerText;
-        if (userIdText && userIdText !== "กำลังโหลด...") {
-            navigator.clipboard.writeText(userIdText);
-            alert("✅ คัดลอก User ID แล้ว: " + userIdText);
-        } else {
-            alert("❌ ไม่มี User ID ให้คัดลอก");
-        }
-    }
-    
-        async function callGas(action, payload = {}) {
-        if (!GAS_URL) {
-            showUserIdDebug("ยังไม่ได้ตั้งค่า GAS_URL กรุณาติดต่อแอดมิน");
-            throw new Error("ยังไม่ได้ตั้งค่า GAS_URL");
-        }
-        if (!accessToken) {
-            showUserIdDebug("ยังไม่ Login LINE หรือ Token ไม่ถูกต้อง", { noToken: true });
-            throw new Error("ยังไม่ Login LINE");
-        }
-        
-        try {
-            const response = await fetch(GAS_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    action: action,
-                    lineAccessToken: accessToken,
-                    userId: userId,
-                    ...payload
-                })
-            });
-            
-            const result = await response.json();
-            
-            // ถ้า Backend ตอบว่า Unauthorized ให้แสดง User ID
-            if (result.success === false && (result.error === "Unauthorized user" || result.error.includes("Unauthorized"))) {
-                showUserIdDebug("❌ คุณยังไม่มีสิทธิ์ใช้งานระบบ กรุณาติดต่อแอดมิน", { authError: true });
-                throw new Error(result.error);
-            }
-            
-            return result;
-            
-        } catch(err) {
-            console.error("callGas error:", err);
-            showUserIdDebug("ไม่สามารถเชื่อมต่อระบบได้: " + err.message, { networkError: true });
-            throw err;
-        }
-    }
-    
-    async function loadPending() {
-        const container = document.getElementById("pendingList");
-        container.innerHTML = '<div class="loading">⏳ โหลดรายการค้าง...</div>';
-        try {
-            const result = await callGas("getPending");
-            if (!result.success) throw new Error(result.error);
-            const list = result.data || [];
-            if (list.length === 0) {
-                container.innerHTML = '<div class="info">✅ ไม่มีรายการค้าง</div>';
-                return;
-            }
-            let html = '<table><thead><tr><th>เลข 13 หลัก</th><th>ชื่อ-สกุล</th><th>เหตุผล</th><th>สถานะ</th><th></th></tr></thead><tbody>';
-            for (let item of list) {
-                html += `<tr>
-                            <td>${escapeHtml(item.id13)}</td>
-                            <td>${escapeHtml(item.fullName)}</td>
-                            <td>${escapeHtml(item.reason)}</td>
-                            <td><span class="status-badge">${escapeHtml(item.status)}</span></td>
-                            <td><button class="btn-edit" data-row="${item.rowId}" data-status="${escapeHtml(item.status)}">แก้ไข</button></td>
-                         </tr>`;
-            }
-            html += '</tbody></table>';
-            container.innerHTML = html;
-            document.querySelectorAll('.btn-edit').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const rowId = btn.getAttribute('data-row');
-                    openEditModal(rowId);
-                });
-            });
-        } catch(err) {
-            container.innerHTML = `<div class="error">❌ ${err.message}</div>`;
-        }
-    }
-    
-    function openEditModal(rowId) {
-        document.getElementById("editProcessId").innerText = rowId;
-        document.getElementById("editModal").style.display = "flex";
-    }
-    
-    async function updateStatus() {
-        const rowId = document.getElementById("editProcessId").innerText;
-        const newStatus = document.getElementById("editStatusSelect").value;
-        if (!rowId) return;
-        try {
-            const result = await callGas("updateStatus", { rowId: rowId, newStatus: newStatus });
-            if (result.success) {
-                document.getElementById("editModal").style.display = "none";
-                await loadPending();
-            } else {
-                alert("อัปเดตไม่สำเร็จ: " + result.error);
-            }
-        } catch(err) {
-            alert("Error: " + err.message);
-        }
-    }
-    
-    async function addProcess() {
-        const id13 = document.getElementById("modalId13").value.trim();
-        const reason = document.getElementById("modalReason").value.trim();
-        if (!id13 || !/^\d{13}$/.test(id13)) {
-            alert("เลข 13 หลักไม่ถูกต้อง");
-            return;
-        }
-        if (!reason) {
-            alert("กรุณาใส่เหตุผล");
-            return;
-        }
-        try {
-            const result = await callGas("addProcess", { id13: id13, reason: reason });
-            if (result.success) {
-                document.getElementById("addModal").style.display = "none";
-                document.getElementById("modalId13").value = "";
-                document.getElementById("modalReason").value = "";
-                await loadPending();
-            } else {
-                alert("เพิ่มไม่สำเร็จ: " + result.error);
-            }
-        } catch(err) {
-            alert("Error: " + err.message);
-        }
-    }
-    
-    function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-    
-    document.getElementById("addProcessBtn").onclick = () => document.getElementById("addModal").style.display = "flex";
-    document.getElementById("closeModalBtn").onclick = () => document.getElementById("addModal").style.display = "none";
-    document.getElementById("closeEditModalBtn").onclick = () => document.getElementById("editModal").style.display = "none";
-    document.getElementById("confirmAddBtn").onclick = addProcess;
-    document.getElementById("confirmEditBtn").onclick = updateStatus;
-    
-    window.addEventListener("DOMContentLoaded", async () => {
-        await initLiff();
-        await loadPending();
-    });
-</script>
-</body>
-</html>
+  <div class="modal-content">
+    <h3><i class="fas fa-edit"></i> แก้ไขสถานะ</h3>
+    <p id="editProcessId" style="display:none;"></p>
+    <select id="editStatusSelect">
+      <option>เสนอผู้พิพากษา</option>
+      <option>รอหมายศาล</option>
+      <option>รอประสานงาน</option>
+      <option>อยู่ระหว่างติดตามตัว</option>
+      <option>เสร็จสิ้น</option>
+    </select>
+    <button id="confirmEditBtn" style="background:#3b82f6;color:white;">บันทึก</button>
+    <button id="closeEditModalBtn" style="background:#e2e
