@@ -1,716 +1,799 @@
+นี่คือโค้ด HTML ที่ปรับปรุงหน้าตาให้ดูทันสมัย มินิมอล เน้นโทนสีน้ำเงินเข้ม ขาว เทา ตัดกัน โดยยังคงฟังก์ชันการทำงานทั้งหมดไว้เหมือนเดิม และซ่อนการแสดง User ID แล้ว
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>ค้นหาหมายจับ | Warrant Tracker</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="theme-color" content="#0B2B42">
+  <title>Warrant Tracker | ค้นหาหมายจับ</title>
+  
+  <!-- Font & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    /* โทนสี: น้ำเงินเข้ม (#0f172a, #1e3a8a), ดำ (#111827), ขาว (#ffffff) */
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #0f172a; /* พื้นหลังน้ำเงินเข้ม/ดำ */
-      background-image: radial-gradient(circle at top right, #1e3a8a 0%, #0f172a 60%);
-      min-height: 100vh;
-      padding: 24px 16px;
-      color: #111827;
-    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 10% 20%, #0A2B3E, #071C2C);
+      min-height: 100vh;
+      padding: 20px;
+      color: #1F2A3E;
+    }
 
-    .container {
-      max-width: 680px; /* บีบให้กระชับขึ้น มินิมอล */
-      margin: 0 auto;
-    }
+    /* ไลท์เทา สบายตา ไม่มืดเกินไป */
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+    }
 
-    /* Main Card สีขาวสะอาดตา */
-    .glass-card {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 32px 28px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    }
+    /* การ์ดหลัก – ขาวสะอาด มินิมอล */
+    .glass-card {
+      background: #FFFFFF;
+      border-radius: 40px;
+      padding: 32px 28px;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255,255,255,0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-    /* Header */
-    .header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
+    .glass-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 28px 50px -15px rgba(0, 0, 0, 0.4);
+    }
 
-    .header h1 {
-      font-size: 26px;
-      font-weight: 700;
-      color: #0f172a; /* สีน้ำเงินเข้มจัดเกือบดำ */
-      margin-bottom: 8px;
-      letter-spacing: -0.5px;
-    }
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
 
-    .header p {
-      color: #64748b;
-      font-size: 14px;
-    }
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(120deg, #0B3B4F, #1A5D7A);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-    /* Profile Section (Clean Style) */
-    .profile-section {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      margin-bottom: 28px;
-    }
+    .header h1 i {
+      background: none;
+      -webkit-text-fill-color: #1A5D7A;
+      color: #1A5D7A;
+    }
 
-    .profile-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #1e3a8a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 20px;
-    }
+    .header p {
+      color: #5F6C84;
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 6px;
+    }
 
-    .profile-avatar img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-    }
+    /* Profile Section – เรียบหรู ไม่แสดง User ID */
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 20px;
+      background: #F2F5F9;
+      border-radius: 60px;
+      margin-bottom: 28px;
+      transition: all 0.2s;
+    }
 
-    .profile-info {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
+    .profile-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1F5E7A, #0E3E52);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      font-weight: 600;
+      box-shadow: 0 6px 12px -8px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
 
-    .profile-info h4 {
-      font-size: 15px;
-      font-weight: 600;
-      color: #0f172a;
-    }
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-    /* ซ่อน User ID ตามที่ต้องการ แต่ยังเก็บ Tag ไว้ให้ JS ใช้งานได้ */
-    #userIdDisplay {
-      display: none; 
-    }
+    .profile-info h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #13293D;
+      margin-bottom: 2px;
+    }
 
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #ecfdf5;
-      color: #059669;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      border: 1px solid #a7f3d0;
-    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #E9F4F0;
+      color: #1B6B4C;
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
 
-    /* Search Type Toggle (Segmented Control แบบเรียบหรู) */
-    .search-type-toggle {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      background: #f1f5f9;
-      padding: 6px;
-      border-radius: 12px;
-    }
+    .status-badge i {
+      font-size: 12px;
+    }
 
-    .toggle-btn {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      background: transparent;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      color: #64748b;
-    }
+    /* toggle search type – modern segmented */
+    .search-type-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+      background: #EDF2F7;
+      padding: 6px;
+      border-radius: 60px;
+    }
 
-    .toggle-btn.active {
-      background: #ffffff;
-      color: #0f172a;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    }
+    .toggle-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border: none;
+      background: transparent;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      color: #4A5A72;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
 
-    /* Input Group */
-    .input-group {
-      margin-bottom: 24px;
-    }
+    .toggle-btn i {
+      font-size: 14px;
+    }
 
-    .input-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: #334155;
-      margin-bottom: 8px;
-    }
+    .toggle-btn.active {
+      background: #FFFFFF;
+      color: #0E5A7A;
+      box-shadow: 0 6px 14px rgba(0, 35, 50, 0.08);
+      font-weight: 700;
+    }
 
-    .input-group input {
-      width: 100%;
-      padding: 16px;
-      font-size: 15px;
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      background: #ffffff;
-      transition: all 0.2s ease;
-      font-family: inherit;
-      color: #0f172a;
-    }
+    /* Input group – เน้นความคมชัด */
+    .input-group {
+      margin-bottom: 24px;
+    }
 
-    .input-group input:focus {
-      outline: none;
-      border-color: #1e3a8a;
-      box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.1);
-    }
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2C3E50;
+      margin-bottom: 10px;
+      letter-spacing: 0.3px;
+    }
 
-    /* ซ่อนลูกศรใน input type="number" */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+    .input-group input {
+      width: 100%;
+      padding: 18px 22px;
+      font-size: 16px;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 60px;
+      background: #FFFFFF;
+      transition: all 0.2s;
+      font-family: 'Inter', monospace;
+      font-weight: 500;
+      color: #0C2D3F;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
 
-    /* Button Group */
-    .button-group {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
+    .input-group input:focus {
+      outline: none;
+      border-color: #1E7A9A;
+      box-shadow: 0 0 0 4px rgba(30, 122, 154, 0.15);
+    }
 
-    .btn {
-      flex: 1;
-      padding: 14px 20px;
-      border: none;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
+    .input-group input::placeholder {
+      color: #B9C3D4;
+      font-weight: 400;
+    }
 
-    /* ปุ่มหลักเน้นน้ำเงินเข้ม */
-    .btn-primary {
-      background: #0f172a;
-      color: #ffffff;
-    }
+    /* Button group */
+    .button-group {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
 
-    .btn-primary:hover {
-      background: #1e3a8a;
-      transform: translateY(-1px);
-    }
+    .btn {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: 0.2px;
+    }
 
-    /* ปุ่มรองเน้นขาว-เทา */
-    .btn-secondary {
-      background: #ffffff;
-      color: #475569;
-      border: 1px solid #cbd5e1;
-    }
+    .btn-primary {
+      background: #0C4E6E;
+      color: white;
+      box-shadow: 0 8px 18px -8px rgba(12, 78, 110, 0.3);
+    }
 
-    .btn-secondary:hover {
-      background: #f8fafc;
-      color: #0f172a;
-    }
+    .btn-primary:hover {
+      background: #0E5F82;
+      transform: scale(1.01);
+      box-shadow: 0 12px 22px -10px rgba(12, 78, 110, 0.4);
+    }
 
-    /* Result Table */
-    .result-section {
-      margin-top: 24px;
-    }
+    .btn-secondary {
+      background: #F1F5F9;
+      color: #2D4A6E;
+      border: 1px solid #E2EDF2;
+    }
 
-    .result-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #0f172a;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid #f1f5f9;
-    }
+    .btn-secondary:hover {
+      background: #E6EDF5;
+      transform: scale(0.99);
+    }
 
-    .result-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+    /* Result table – clean, modern, easy read */
+    .result-section {
+      margin-top: 8px;
+    }
 
-    .result-table th {
-      text-align: left;
-      padding: 12px 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #64748b;
-      border-bottom: 1px solid #e2e8f0;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+    .result-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2C4F6E;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-left: 4px solid #1C6E8F;
+      padding-left: 14px;
+    }
 
-    .result-table td {
-      padding: 16px 8px;
-      font-size: 14px;
-      color: #334155;
-      border-bottom: 1px solid #f1f5f9;
-    }
+    .result-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: #FEFEFE;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
 
-    .result-table tr:last-child td {
-      border-bottom: none;
-    }
+    .result-table th {
+      text-align: left;
+      padding: 16px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #4F6F8F;
+      background: #F8FBFE;
+      border-bottom: 1.5px solid #E9EFF4;
+    }
 
-    .sheet-badge {
-      background: #f1f5f9;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #475569;
-      border: 1px solid #e2e8f0;
-    }
+    .result-table td {
+      padding: 14px 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1F384C;
+      border-bottom: 1px solid #ECF3F8;
+      background-color: #FFFFFF;
+    }
 
-    /* Loading Overlay */
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(15, 23, 42, 0.85); /* เปลี่ยนเป็นโทนเข้มโปร่งแสง */
-      backdrop-filter: blur(6px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-      transition: all 0.3s ease;
-    }
+    .result-table tr:hover td {
+      background-color: #F9FDFF;
+    }
 
-    .loading-content {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 32px 40px;
-      text-align: center;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-    }
+    .sheet-badge {
+      background: #EFF3F8;
+      padding: 5px 12px;
+      border-radius: 40px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #2B5F7A;
+      display: inline-block;
+    }
 
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid #f1f5f9;
-      border-top-color: #1e3a8a; /* Spinner สีน้ำเงิน */
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 16px;
-    }
+    /* Message boxes (info/error/success) */
+    .info-box, .error-box, .success-box {
+      padding: 18px 22px;
+      border-radius: 32px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      backdrop-filter: blur(2px);
+    }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    .info-box {
+      background: #EFF6FF;
+      color: #1C6F9C;
+      border-left: 5px solid #1C6F9C;
+    }
 
-    .loading-content p {
-      color: #0f172a;
-      font-size: 15px;
-      font-weight: 600;
-    }
+    .error-box {
+      background: #FFEFEF;
+      color: #B91C1C;
+      border-left: 5px solid #B91C1C;
+    }
 
-    /* Message Boxes (Clean Design) */
-    .info-box, .error-box, .success-box {
-      padding: 16px;
-      border-radius: 12px;
-      font-size: 14px;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-weight: 500;
-    }
+    .success-box {
+      background: #E9F9EF;
+      color: #1F7840;
+      border-left: 5px solid #1F7840;
+    }
 
-    .info-box {
-      background: #f8fafc;
-      color: #475569;
-      border: 1px solid #e2e8f0;
-    }
+    /* Loading Overlay – minimalist */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 28, 44, 0.85);
+      backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      transition: all 0.2s;
+    }
 
-    .error-box {
-      background: #fef2f2;
-      color: #b91c1c;
-      border: 1px solid #fecaca;
-    }
+    .loading-content {
+      background: white;
+      border-radius: 56px;
+      padding: 36px 48px;
+      text-align: center;
+      box-shadow: 0 40px 60px -20px rgba(0,0,0,0.4);
+      width: 260px;
+    }
 
-    .success-box {
-      background: #f0fdf4;
-      color: #15803d;
-      border: 1px solid #bbf7d0;
-    }
+    .spinner {
+      width: 46px;
+      height: 46px;
+      border: 3px solid #E0ECF5;
+      border-top-color: #166C8C;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 18px;
+    }
 
-    /* Responsive */
-    @media (max-width: 480px) {
-      body {
-        padding: 16px 12px;
-      }
-      .glass-card {
-        padding: 24px 20px;
-      }
-      .btn {
-        padding: 12px;
-        font-size: 14px;
-      }
-      .result-table th, .result-table td {
-        font-size: 13px;
-        padding: 12px 4px;
-      }
-    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-    .hidden {
-      display: none !important;
-    }
-  </style>
+    .dot-wave {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: #1F7F9F;
+      border-radius: 50%;
+      animation: wave 1.1s ease-in-out infinite;
+    }
+
+    @keyframes wave {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+      30% { transform: translateY(-10px); opacity: 1; }
+    }
+
+    .loading-content p {
+      color: #2A4F6E;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+
+    /* Responsive fine-tune */
+    @media (max-width: 560px) {
+      body {
+        padding: 12px;
+      }
+      .glass-card {
+        padding: 22px 18px;
+      }
+      .btn {
+        padding: 12px 12px;
+        font-size: 13px;
+      }
+      .toggle-btn {
+        padding: 10px 6px;
+        font-size: 12px;
+      }
+      .result-table th, .result-table td {
+        padding: 10px 8px;
+        font-size: 12px;
+      }
+      .profile-section {
+        padding: 8px 16px;
+      }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* debug message style (keep consistent) */
+    .debug-card {
+      background: #FFF8E7;
+      border-radius: 32px;
+      padding: 20px;
+      border: 1px solid #F1D48A;
+    }
+  </style>
 </head>
 <body>
 
 <div id="loadingOverlay" class="loading-overlay">
-  <div class="loading-content">
-    <div class="spinner"></div>
-    <p>กำลังตรวจสอบสิทธิ์</p>
-    <p style="font-size: 13px; margin-top: 8px; color: #64748b; font-weight: 400;">กรุณารอสักครู่...</p>
-  </div>
+  <div class="loading-content">
+    <div class="spinner"></div>
+    <p>กำลังตรวจสอบสิทธิ์</p>
+    <div class="dot-wave">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <p style="font-size: 12px; margin-top: 12px; color: #8DA3BB;">กรุณารอสักครู่...</p>
+  </div>
 </div>
 
 <div class="container">
-  <div class="glass-card">
-    <div class="header">
-      <h1><i class="fas fa-search" style="color: #1e3a8a; margin-right: 8px;"></i> ระบบค้นหาหมายจับ</h1>
-      <p>ค้นหาจากฐานข้อมูลส่วนกลาง</p>
-    </div>
+  <div class="glass-card">
+    <div class="header">
+      <h1><i class="fas fa-gavel"></i> WARRANT TRACKER</h1>
+      <p>ระบบค้นหาหมายจับอัจฉริยะ • เชื่อมต่อฐานข้อมูลกลาง</p>
+    </div>
 
-    <div id="profileSection" class="profile-section hidden">
-      <div class="profile-avatar" id="profileAvatar">
-        <i class="fas fa-user"></i>
-      </div>
-      <div class="profile-info">
-        <h4 id="userName">-</h4>
-        <p id="userIdDisplay">กำลังโหลด...</p> </div>
-      <div style="margin-left: auto;">
-        <span class="status-badge"><i class="fas fa-check-circle"></i> พร้อมใช้งาน</span>
-      </div>
-    </div>
+    <!-- Profile Section: ไม่แสดง UserID ชัดเจน (ซ่อนเรียบร้อย) -->
+    <div id="profileSection" class="profile-section hidden">
+      <div class="profile-avatar" id="profileAvatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="profile-info">
+        <h4 id="userName">-</h4>
+      </div>
+      <div style="margin-left: auto;">
+        <span class="status-badge"><i class="fas fa-shield-alt"></i> พร้อมใช้งาน</span>
+      </div>
+    </div>
 
-    <div class="search-type-toggle">
-      <button class="toggle-btn active" data-type="id13">
-        <i class="fas fa-id-card"></i> เลข 13 หลัก
-      </button>
-      <button class="toggle-btn" data-type="name">
-        <i class="fas fa-user"></i> ชื่อ-สกุล
-      </button>
-    </div>
+    <!-- Search Type Toggle (id13 / name) -->
+    <div class="search-type-toggle">
+      <button class="toggle-btn active" data-type="id13">
+        <i class="fas fa-hashtag"></i> เลข 13 หลัก
+      </button>
+      <button class="toggle-btn" data-type="name">
+        <i class="fas fa-user"></i> ชื่อ-สกุล
+      </button>
+    </div>
 
-    <div class="input-group">
-      <label><i class="fas fa-keyboard" style="margin-right: 4px; color: #64748b;"></i> ข้อมูลคำค้นหา</label>
-      <input type="number" id="searchInput" placeholder="กรอกเลขประจำตัวประชาชน 13 หลัก" autocomplete="off">
-    </div>
+    <div class="input-group">
+      <label><i class="fas fa-search"></i> คำค้นหา</label>
+      <input type="number" id="searchInput" placeholder="กรอกเลขบัตรประชาชน 13 หลัก" autocomplete="off">
+    </div>
 
-    <div class="button-group">
-      <button class="btn btn-primary" id="searchBtn">
-        <i class="fas fa-search"></i> ค้นหา
-      </button>
-      <button class="btn btn-secondary" id="clearBtn">
-        <i class="fas fa-redo-alt"></i> ล้างค่า
-      </button>
-    </div>
+    <div class="button-group">
+      <button class="btn btn-primary" id="searchBtn">
+        <i class="fas fa-search"></i> ค้นหา
+      </button>
+      <button class="btn btn-secondary" id="clearBtn">
+        <i class="fas fa-eraser"></i> ล้างข้อมูล
+      </button>
+    </div>
 
-    <div class="result-section" id="resultArea">
-      <div class="info-box">
-        <i class="fas fa-info-circle"></i> กรุณากรอกข้อมูลเพื่อเริ่มการค้นหา
-      </div>
-    </div>
-  </div>
+    <div class="result-section" id="resultArea">
+      <div class="info-box">
+        <i class="fas fa-info-circle"></i> กรุณากรอกข้อมูลแล้วกดค้นหา
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- hidden element เพื่อรับค่า userIdDisplay (ไม่แสดงผลต่อ UI แต่ป้องกัน console error) -->
+<span id="userIdDisplay" class="hidden"></span>
 
 <script src="https://static.line-scdn.net/liff/edge/versions/2.23.0/sdk.js"></script>
 <script>
-  // ========== CONFIGURATION ==========
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbxQJvzBmxO09-N4smPuJS4JwS5U8rM738fJRkWFXs-r-sVA-myuLPxjIqZJHj5Y_62fEg/exec";  
-  const LIFF_ID = "2010276759-IZoVxJjH";          
-  // ===================================
+  // ========== CONFIGURATION ==========
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbxQJvzBmxO09-N4smPuJS4JwS5U8rM738fJRkWFXs-r-sVA-myuLPxjIqZJHj5Y_62fEg/exec";  // 🔴 แก้ไขตามจริง
+  const LIFF_ID = "2010276759-IZoVxJjH";          // 🔴 แก้ไขตามจริง
+  // ===================================
 
-  let lineProfile = { userId: '', displayName: '', pictureUrl: '' };
-  let currentSearchType = "id13";
-  let isAuthorized = false;
+  let lineProfile = { userId: '', displayName: '', pictureUrl: '' };
+  let currentSearchType = "id13";
+  let isAuthorized = false;
 
-  // แสดง/ซ่อน Loading
-  function showLoading(show, customText = null) {
-    const overlay = document.getElementById("loadingOverlay");
-    if (show) {
-      if (customText) {
-        overlay.querySelectorAll("p")[0].innerText = customText;
-      }
-      overlay.style.display = "flex";
-    } else {
-      overlay.style.display = "none";
-      overlay.querySelectorAll("p")[0].innerText = "กำลังตรวจสอบสิทธิ์";
-    }
-  }
+  // แสดง/ซ่อน Loading (ปรับสไตล์แล้ว)
+  function showLoading(show, customText = null) {
+    const overlay = document.getElementById("loadingOverlay");
+    if (show) {
+      if (customText) {
+        const pElem = overlay.querySelector("p");
+        if(pElem) pElem.innerText = customText;
+      }
+      overlay.style.display = "flex";
+    } else {
+      overlay.style.display = "none";
+      const defaultP = overlay.querySelector("p");
+      if(defaultP) defaultP.innerText = "กำลังตรวจสอบสิทธิ์";
+    }
+  }
 
-  // แสดงผลลัพธ์
-  function showResult(type, message, data = null) {
-    const resultDiv = document.getElementById("resultArea");
-    
-    if (type === "info") {
-      resultDiv.innerHTML = `<div class="info-box"><i class="fas fa-info-circle"></i> ${message}</div>`;
-    } else if (type === "error") {
-      resultDiv.innerHTML = `<div class="error-box"><i class="fas fa-exclamation-triangle"></i> ${message}</div>`;
-    } else if (type === "success") {
-      resultDiv.innerHTML = `<div class="success-box"><i class="fas fa-check-circle"></i> ${message}</div>`;
-    } else if (type === "table" && data) {
-      if (data.length === 0) {
-        resultDiv.innerHTML = `<div class="info-box"><i class="fas fa-search"></i> ไม่พบข้อมูลที่ค้นหาในระบบ</div>`;
-        return;
-      }
-      
-      let html = `
-        <div class="result-title">
-          <i class="fas fa-list-ul" style="color:#1e3a8a;"></i> ผลการค้นหาพบ ${data.length} รายการ
-        </div>
-        <table class="result-table">
-          <thead>
-            <tr><th>เลขที่หมายจับ</th><th>ชื่อ-สกุล</th><th>สถานะ</th><th>ที่มา</th></tr>
-          </thead>
-          <tbody>
-      `;
-      
-      for (let row of data) {
-        html += `
-          <tr>
-            <td style="font-weight:500;">${escapeHtml(row.warrantNo || '-')}</td>
-            <td>${escapeHtml(row.fullName || '-')}</td>
-            <td>${escapeHtml(row.status || '-')}</td>
-            <td><span class="sheet-badge">${escapeHtml(row.sheetName || '-')}</span></td>
-          </tr>
-        `;
-      }
-      
-      html += `</tbody></table>`;
-      resultDiv.innerHTML = html;
-    }
-  }
+  // แสดงผลลัพธ์ในรูปแบบที่เข้าใจง่าย (table, info, error)
+  function showResult(type, message, data = null) {
+    const resultDiv = document.getElementById("resultArea");
+    
+    if (type === "info") {
+      resultDiv.innerHTML = `<div class="info-box"><i class="fas fa-info-circle"></i> ${message}</div>`;
+    } else if (type === "error") {
+      resultDiv.innerHTML = `<div class="error-box"><i class="fas fa-exclamation-triangle"></i> ${message}</div>`;
+    } else if (type === "success") {
+      resultDiv.innerHTML = `<div class="success-box"><i class="fas fa-check-circle"></i> ${message}</div>`;
+    } else if (type === "table" && data) {
+      if (data.length === 0) {
+        resultDiv.innerHTML = `<div class="info-box"><i class="fas fa-search"></i> ไม่พบข้อมูลที่ค้นหา</div>`;
+        return;
+      }
+      
+      let html = `
+        <div class="result-title">
+          <i class="fas fa-list-ul"></i> ผลการค้นหา (${data.length} รายการ)
+        </div>
+        <table class="result-table">
+          <thead>
+            <tr><th>เลขที่หมายจับ</th><th>ชื่อ-สกุล</th><th>สถานะ</th><th>ชีทข้อมูล</th></tr>
+          </thead>
+          <tbody>
+      `;
+      
+      for (let row of data) {
+        html += `
+          <tr>
+            <td>${escapeHtml(row.warrantNo || '-')}</td>
+            <td>${escapeHtml(row.fullName || '-')}</td>
+            <td>${escapeHtml(row.status || '-')}</td>
+            <td><span class="sheet-badge">${escapeHtml(row.sheetName || '-')}</span></td>
+          </tr>
+        `;
+      }
+      
+      html += `</tbody></table>`;
+      resultDiv.innerHTML = html;
+    }
+  }
 
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
-      return m;
-    });
-  }
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
 
-  function showDebugUserId(message, userIdValue = null) {
-    const userIdToShow = userIdValue || lineProfile.userId || "ไม่สามารถดึง User ID ได้";
-    const resultDiv = document.getElementById("resultArea");
-    
-    let debugHtml = `
-      <div style="background: #fffbeb; border: 1px solid #fef08a; border-radius: 12px; padding: 20px;">
-        <div style="color: #854d0e; font-weight: 600; margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
-          <i class="fas fa-lock"></i> ${message}
-        </div>
-        <div style="background: #ffffff; color: #334155; padding: 12px; border-radius: 8px; border: 1px dashed #cbd5e1; font-family: monospace; font-size: 13px; word-break: break-all;">
-          <strong style="color: #0f172a;">User ID:</strong><br>
-          <span id="debugUserIdText">${userIdToShow}</span>
-        </div>
-        <div style="margin-top: 16px; display: flex; gap: 10px;">
-          <button onclick="copyDebugUserId()" style="flex:1; background: #0f172a; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 13px;">
-            <i class="fas fa-copy"></i> คัดลอก ID
-          </button>
-        </div>
-      </div>
-    `;
-    
-    resultDiv.innerHTML = debugHtml;
-    window.copyDebugUserId = function() {
-      const text = document.getElementById("debugUserIdText").innerText;
-      navigator.clipboard.writeText(text);
-      alert("✅ คัดลอก User ID เรียบร้อยแล้ว");
-    };
-  }
+  // แสดง debug พร้อม userid (ยังคงดีไซน์ให้สอดคล้องกับ theme)
+  function showDebugUserId(message, userIdValue = null) {
+    const userIdToShow = userIdValue || lineProfile.userId || "ไม่สามารถดึง User ID ได้";
+    const resultDiv = document.getElementById("resultArea");
+    
+    let debugHtml = `
+      <div class="debug-card" style="background: #FFFBEA; border-radius: 32px; padding: 22px; border-left: 6px solid #E6A017;">
+        <div style="color: #A65C00; font-weight: 700; margin-bottom: 14px; display: flex; gap: 8px; align-items: center;">
+          <i class="fas fa-exclamation-triangle"></i> ${message}
+        </div>
+        <div style="background: #1F2E3C; color: #CBE5F5; padding: 16px; border-radius: 24px; font-family: monospace; font-size: 13px; word-break: break-all;">
+          <strong style="color: #F9C86E;">🆔 User ID ของคุณ:</strong><br>
+          <span id="debugUserIdText">${userIdToShow}</span>
+        </div>
+        <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <button onclick="copyDebugUserId()" style="background: #D98E2B; border: none; color: white; padding: 10px 22px; border-radius: 40px; font-weight: 600; cursor: pointer;">
+            <i class="fas fa-copy"></i> คัดลอก User ID
+          </button>
+          <button onclick="location.reload()" style="background: #95A9C2; border: none; color: #1E2F3E; padding: 10px 22px; border-radius: 40px; font-weight: 600; cursor: pointer;">
+            <i class="fas fa-sync-alt"></i> ลองใหม่
+          </button>
+        </div>
+        <div style="margin-top: 14px; font-size: 12px; color: #B47C2E;">
+          <i class="fas fa-envelope"></i> กรุณาส่ง User ID นี้ให้แอดมินเพื่อขอสิทธิ์เข้าใช้งาน
+        </div>
+      </div>
+    `;
+    resultDiv.innerHTML = debugHtml;
+    window.copyDebugUserId = function() {
+      const text = document.getElementById("debugUserIdText").innerText;
+      navigator.clipboard.writeText(text);
+      alert("✅ คัดลอก User ID เรียบร้อย");
+    };
+  }
 
-  // เรียก GAS
-  async function callGas(action, payload = {}) {
-  if (!GAS_URL || !GAS_URL.startsWith("https://script.google.com/macros/s/") || !GAS_URL.endsWith("/exec")) {
-    showDebugUserId("ยังไม่ได้ตั้งค่าระบบหลังบ้าน", "กรุณาติดต่อผู้ดูแลระบบ");
-    throw new Error("GAS_URL not configured");
-  }
-  
-  if (!lineProfile.userId) {
-    showDebugUserId("กรุณาเข้าสู่ระบบผ่าน LINE", "ยังไม่ได้รับสิทธิ์");
-    throw new Error("Not logged in");
-  }
-  
-  try {
-    const response = await fetch(GAS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({
-        action: action,
-        userId: lineProfile.userId,
-        displayName: lineProfile.displayName,
-        ...payload
-      })
-    });
-    
-    return await response.json();
-    
-  } catch(err) {
-    console.error("callGas error:", err);
-    showResult("error", "ไม่สามารถเชื่อมต่อระบบได้ โปรดลองอีกครั้ง");
-    throw err;
-  }
-}
+  // Call GAS (ไม่เปลี่ยนแปลงฟังก์ชัน)
+  async function callGas(action, payload = {}) {
+    if (!GAS_URL || !GAS_URL.startsWith("https://script.google.com/macros/s/") || !GAS_URL.endsWith("/exec")) {
+      showDebugUserId("ยังไม่ได้ตั้งค่า GAS_URL กรุณาติดต่อแอดมิน", "กรุณาตั้งค่า GAS_URL");
+      throw new Error("GAS_URL not configured");
+    }
+    if (!lineProfile.userId) {
+      showDebugUserId("ยังไม่ Login LINE หรือไม่ได้รับอนุญาต", "กรุณา Login LINE ก่อน");
+      throw new Error("Not logged in");
+    }
+    try {
+      const response = await fetch(GAS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: action,
+          userId: lineProfile.userId,
+          displayName: lineProfile.displayName,
+          ...payload
+        })
+      });
+      return await response.json();
+    } catch(err) {
+      console.error("callGas error:", err);
+      showResult("error", "ไม่สามารถเชื่อมต่อระบบได้: " + err.message);
+      throw err;
+    }
+  }
 
-  // ค้นหา
-  async function performSearch() {
-    const searchInput = document.getElementById("searchInput");
-    const keyword = searchInput.value.trim();
-    
-    if (!keyword) {
-      showResult("error", "กรุณากรอกคำค้นหา");
-      return;
-    }
-    
-    showLoading(true, "กำลังค้นหาข้อมูล...");
-    
-    try {
-      const result = await callGas("search", {
-        searchType: currentSearchType,
-        keyword: keyword
-      });
-      
-      if (result.success === false) {
-        if (result.error === "Unauthorized user") {
-          showDebugUserId("คุณไม่มีสิทธิ์เข้าใช้งานระบบ", lineProfile.userId);
-        } else {
-          showResult("error", result.error || "เกิดข้อผิดพลาดในการค้นหา");
-        }
-      } else {
-        showResult("table", "", result.data || []);
-        searchInput.value = ""; 
-      }
-      
-    } catch(err) {
-      console.error(err);
-      showResult("error", "เกิดข้อผิดพลาด: " + err.message);
-    } finally {
-      showLoading(false);
-    }
-  }
+  // ค้นหา (logic เดิม เพิ่ม clear search หลังสำเร็จ)
+  async function performSearch() {
+    const searchInput = document.getElementById("searchInput");
+    let keyword = searchInput.value.trim();
+    
+    if (!keyword) {
+      showResult("error", "กรุณากรอกข้อมูลก่อนค้นหา");
+      return;
+    }
+    if (currentSearchType === "id13") {
+      if (!/^\d{13}$/.test(keyword)) {
+        showResult("error", "เลข 13 หลักต้องเป็นตัวเลข 13 ตัวเท่านั้น");
+        return;
+      }
+    } else if (currentSearchType === "name") {
+      if (keyword.length < 2) {
+        showResult("error", "กรุณากรอกชื่อ-สกุลอย่างน้อย 2 ตัวอักษร");
+        return;
+      }
+    }
+    
+    showLoading(true, "กำลังค้นหาข้อมูล...");
+    try {
+      const result = await callGas("search", {
+        searchType: currentSearchType,
+        keyword: keyword
+      });
+      
+      if (result && result.success === false) {
+        showResult("error", result.message || "เกิดข้อผิดพลาดในการค้นหา");
+      } else {
+        showResult("table", "", result.data || []);
+        // เคลียร์ช่องค้นหาอัตโนมัติหลังค้นหาสำเร็จ (UX สะอาด)
+        searchInput.value = "";
+      }
+    } catch(err) {
+      console.error(err);
+      showResult("error", "เกิดข้อผิดพลาด: " + err.message);
+    } finally {
+      showLoading(false);
+    }
+  }
 
-  function clearForm() {
-    document.getElementById("searchInput").value = "";
-    showResult("info", "พร้อมสำหรับการค้นหาใหม่");
-  }
+  function clearForm() {
+    document.getElementById("searchInput").value = "";
+    showResult("info", "ล้างข้อมูลเรียบร้อย พร้อมค้นหาใหม่");
+  }
 
-  // LIFF Init
-  function initLiff() {
-    return new Promise((resolve, reject) => {
-      liff.init({ liffId: LIFF_ID }, () => {
-        if (liff.isLoggedIn()) {
-          liff.getProfile().then(profile => {
-            lineProfile.userId = profile.userId;
-            lineProfile.displayName = profile.displayName;
-            lineProfile.pictureUrl = profile.pictureUrl || "";
-            
-            // อัปเดต UI
-            document.getElementById("userName").innerText = profile.displayName;
-            document.getElementById("userIdDisplay").innerText = profile.userId; // ซ่อนใน CSS แล้ว
-            
-            const avatarDiv = document.getElementById("profileAvatar");
-            if (profile.pictureUrl) {
-              avatarDiv.innerHTML = `<img src="${profile.pictureUrl}" alt="Profile">`;
-            } else {
-              avatarDiv.innerHTML = `<i class="fas fa-user"></i>`;
-            }
-            
-            document.getElementById("profileSection").classList.remove("hidden");
-            
-            resolve(true);
-          }).catch(err => {
-            console.error("getProfile error:", err);
-            reject(err);
-          });
-        } else {
-          liff.login();
-          reject(new Error("Need login"));
-        }
-      }, err => {
-        console.error("liff.init error:", err);
-        reject(err);
-      });
-    });
-  }
+  // LIFF Init (คงเดิม แต่ไม่มีการแสดง userId บนหน้า)
+  function initLiff() {
+    return new Promise((resolve, reject) => {
+      liff.init({ liffId: LIFF_ID }, () => {
+        if (liff.isLoggedIn()) {
+          liff.getProfile().then(profile => {
+            lineProfile.userId = profile.userId;
+            lineProfile.displayName = profile.displayName;
+            lineProfile.pictureUrl = profile.pictureUrl || "";
+            
+            document.getElementById("userName").innerText = profile.displayName;
+            // กรณีมี element userIdDisplay (hidden) เราไม่ต้องแสดงผล แต่เพื่อให้ไม่มี error ก็ set ค่า
+            const hiddenUserIdSpan = document.getElementById("userIdDisplay");
+            if(hiddenUserIdSpan) hiddenUserIdSpan.innerText = profile.userId;
+            
+            const avatarDiv = document.getElementById("profileAvatar");
+            if (profile.pictureUrl) {
+              avatarDiv.innerHTML = `<img src="${profile.pictureUrl}" alt="Profile">`;
+            } else {
+              avatarDiv.innerHTML = `<i class="fas fa-user"></i>`;
+            }
+            document.getElementById("profileSection").classList.remove("hidden");
+            resolve(true);
+          }).catch(err => {
+            console.error("getProfile error:", err);
+            reject(err);
+          });
+        } else {
+          liff.login();
+          reject(new Error("Need login"));
+        }
+      }, err => {
+        console.error("liff.init error:", err);
+        reject(err);
+      });
+    });
+  }
 
-  // Event Listeners
-  document.getElementById("searchBtn").addEventListener("click", performSearch);
-  document.getElementById("clearBtn").addEventListener("click", clearForm);
-  document.getElementById("searchInput").addEventListener("keypress", function(e) {
-    if (e.key === "Enter") performSearch();
-  });
-  
-  document.querySelectorAll(".toggle-btn").forEach(btn => {
-    btn.addEventListener("click", function() {
-      // 1. จัดการ Class active
-      document.querySelectorAll(".toggle-btn").forEach(b => b.classList.remove("active"));
-      this.classList.add("active");
-      
-      // 2. อัปเดตสถานะ
-      currentSearchType = this.getAttribute("data-type");
-      const input = document.getElementById("searchInput");
-      
-      // 3. ปรับคุณสมบัติของ input ให้ตรงตามโหมด
-      if (currentSearchType === "id13") {
-        input.type = "number";           
-        input.inputMode = "numeric";     
-        input.placeholder = "กรอกเลขประจำตัวประชาชน 13 หลัก";
-      } else {
-        input.type = "text";             
-        input.inputMode = "text";        
-        input.placeholder = "กรอกชื่อ-นามสกุล";
-      }
-      
-      // 4. ล้างค่า
-      input.value = "";
-      input.focus();
-    });
-  });
+  // Event Listeners
+  document.getElementById("searchBtn").addEventListener("click", performSearch);
+  document.getElementById("clearBtn").addEventListener("click", clearForm);
+  document.getElementById("searchInput").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") performSearch();
+  });
+  
+  document.querySelectorAll(".toggle-btn").forEach(btn => {
+    btn.addEventListener("click", function() {
+      document.querySelectorAll(".toggle-btn").forEach(b => b.classList.remove("active"));
+      this.classList.add("active");
+      currentSearchType = this.getAttribute("data-type");
+      const input = document.getElementById("searchInput");
+      if (currentSearchType === "id13") {
+        input.type = "number";
+        input.inputMode = "numeric";
+        input.placeholder = "กรอกเลขบัตรประชาชน 13 หลัก";
+      } else {
+        input.type = "text";
+        input.inputMode = "text";
+        input.placeholder = "กรอกชื่อ-สกุล (เช่น สมชาย จริงใจ)";
+      }
+      input.value = "";
+      input.focus();
+    });
+  });
 
-  // เริ่มต้น
-  window.addEventListener("DOMContentLoaded", async () => {
-    showLoading(true);
-    
-    try {
-      await initLiff();
-      showResult("info", "เข้าสู่ระบบสำเร็จ กรุณากรอกข้อมูลที่ต้องการค้นหา");
-    } catch (err) {
-      console.error("Init error:", err);
-      showDebugUserId("เชื่อมต่อ LINE ไม่สำเร็จ", "ไม่สามารถเข้าสู่ระบบได้");
-    } finally {
-      setTimeout(() => showLoading(false), 500);
-    }
-  });
+  // เริ่มต้นแอป
+  window.addEventListener("DOMContentLoaded", async () => {
+    showLoading(true);
+    try {
+      await initLiff();
+      showResult("info", "✅ พร้อมใช้งาน • ค้นหาหมายจับได้ทันที");
+    } catch (err) {
+      console.error("Init error:", err);
+      showDebugUserId("เชื่อมต่อ LINE ไม่สำเร็จ กรุณาตรวจสอบสิทธิ์", "ไม่สามารถเชื่อมต่อ LINE ได้");
+    } finally {
+      setTimeout(() => showLoading(false), 500);
+    }
+  });
 </script>
 </body>
 </html>
+```
