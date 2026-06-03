@@ -578,18 +578,12 @@
       throw new Error("Not logged in");
     }
     
-    try {
-      const response = await fetch(GAS_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" }, 
-        body: JSON.stringify({
-          action: action,
-          userId: lineProfile.userId,
-          displayName: lineProfile.displayName,
-          ...payload
-        })
-      });
-      
+  // ✅ สร้าง output และส่งกลับเลย ไม่ต้องใส่ setHeader แล้วครับ
+  const output = ContentService.createTextOutput(JSON.stringify(result));
+  output.setMimeType(ContentService.MimeType.JSON);
+  
+  return output;
+}
       return await response.json();
       
     } catch(err) {
