@@ -257,26 +257,43 @@
     }
     
     // ฟังก์ชันเรียก Google Apps Script
-    async function callGas(action, payload = {}) {
+       async function callGas(action, payload = {}) {
         if (!GAS_URL) {
-            throw new Error("ยังไม่ได้ตั้งค่า GAS_URL กรุณาใส่ URL หลังจาก Deploy Web App");
+            showUserIdDebug("ยังไม่ได้ตั้งค่า GAS_URL กรุณาติดต่อแอดมิน");
+            throw new Error("ยังไม่ได้ตั้งค่า GAS_URL");
         }
         if (!accessToken) {
+            showUserIdDebug("ยังไม่ Login LINE หรือ Token ไม่ถูกต้อง", { noToken: true });
             throw new Error("ยังไม่ Login LINE");
         }
         
-        const response = await fetch(GAS_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                action: action,
-                lineAccessToken: accessToken,
-                userId: userId,
-                ...payload
-            })
-        });
-        
-        return await response.json();
+        try {
+            const response = await fetch(GAS_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: action,
+                    lineAccessToken: accessToken,
+                    userId: userId,
+                    ...payload
+                })
+            });
+            
+            const result = await response.json();
+            
+            // ถ้า Backend ตอบว่า Unauthorized ให้แสดง User ID
+            if (result.success === false && (result.error === "Unauthorized user" || result.error.includes("Unauthorized"))) {
+                showUserIdDebug("❌ คุณยังไม่มีสิทธิ์ใช้งานระบบ กรุณาติดต่อแอดมิน", { authError: true });
+                throw new Error(result.error);
+            }
+            
+            return result;
+            
+        } catch(err) {
+            console.error("callGas error:", err);
+            showUserIdDebug("ไม่สามารถเชื่อมต่อระบบได้: " + err.message, { networkError: true });
+            throw err;
+        }
     }
     
     // แสดงผลการค้นหา
