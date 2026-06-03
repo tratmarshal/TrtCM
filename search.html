@@ -685,13 +685,28 @@
   
   document.querySelectorAll(".toggle-btn").forEach(btn => {
     btn.addEventListener("click", function() {
+      // 1. จัดการ Class active
       document.querySelectorAll(".toggle-btn").forEach(b => b.classList.remove("active"));
       this.classList.add("active");
-      currentSearchType = this.getAttribute("data-type");
       
+      // 2. อัปเดตสถานะ
+      currentSearchType = this.getAttribute("data-type");
       const input = document.getElementById("searchInput");
-      input.placeholder = currentSearchType === "id13" ? "กรอกเลข 13 หลัก" : "กรอกชื่อ-สกุล";
+      
+      // 3. ปรับคุณสมบัติของ input ให้ตรงตามโหมด
+      if (currentSearchType === "id13") {
+        input.type = "number";           // สำหรับเลข
+        input.inputMode = "numeric";     // เรียกคีย์บอร์ดตัวเลข
+        input.placeholder = "กรอกเลข 13 หลัก";
+      } else {
+        input.type = "text";             // สำหรับชื่อ
+        input.inputMode = "text";        // เรียกคีย์บอร์ดตัวอักษร
+        input.placeholder = "กรอกชื่อ-สกุล";
+      }
+      
+      // 4. ล้างค่า
       input.value = "";
+      input.focus();
     });
   });
 
