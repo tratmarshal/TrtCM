@@ -568,7 +568,7 @@
 
   // เรียก GAS
   async function callGas(action, payload = {}) {
-    if (!GAS_URL || GAS_URL === "YOUR_GAS_WEBAPP_URL_HERE") {
+    if (!GAS_URL || GAS_URL === "https://script.google.com/macros/s/AKfycbxQJvzBmxO09-N4smPuJS4JwS5U8rM738fJRkWFXs-r-sVA-myuLPxjIqZJHj5Y_62fEg/exec") {
       showDebugUserId("ยังไม่ได้ตั้งค่า GAS_URL กรุณาติดต่อแอดมิน", "กรุณาตั้งค่า GAS_URL");
       throw new Error("GAS_URL not configured");
     }
