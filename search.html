@@ -1,410 +1,729 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ค้นหาหมายจับ</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-        }
-        body {
-            background: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        h1 {
-            font-size: 24px;
-            color: #1e3a5f;
-            margin-top: 0;
-            margin-bottom: 8px;
-        }
-        .sub {
-            color: #5a6e7c;
-            font-size: 14px;
-            margin-bottom: 24px;
-            border-left: 3px solid #2c7da0;
-            padding-left: 12px;
-        }
-        .search-type {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .search-type label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            background: #f8f9fc;
-            padding: 8px 16px;
-            border-radius: 40px;
-            border: 1px solid #cdd7e6;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 14px 16px;
-            font-size: 16px;
-            border: 1px solid #cbd5e1;
-            border-radius: 16px;
-            background: white;
-            margin-bottom: 16px;
-        }
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #2c7da0;
-            box-shadow: 0 0 0 3px rgba(44,125,160,0.2);
-        }
-        .button-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 600;
-            border: none;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-search {
-            background: #1e3a5f;
-            color: white;
-            flex: 1;
-        }
-        .btn-clear {
-            background: #e9ecef;
-            color: #2c3e50;
-        }
-        .result-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 16px;
-        }
-        .result-table th, .result-table td {
-            text-align: left;
-            padding: 12px 8px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .result-table th {
-            background: #f1f5f9;
-            font-weight: 600;
-            color: #0f172a;
-        }
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #2c7da0;
-        }
-        .error {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 12px;
-            border-radius: 16px;
-            margin-top: 16px;
-        }
-        .info {
-            background: #e6f7ff;
-            padding: 12px;
-            border-radius: 16px;
-            color: #0077b6;
-        }
-        footer {
-            text-align: center;
-            font-size: 12px;
-            color: #7e8c9e;
-            margin-top: 32px;
-        }
-        hr {
-            margin: 20px 0;
-            border: none;
-            border-top: 1px solid #e2edf2;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>ค้นหาหมายจับ | Warrant Tracker</title>
+  
+  <!-- Font & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Glassmorphism Container */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 32px;
+      padding: 28px 24px;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
+      transition: transform 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    /* Profile Section */
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%);
+      border-radius: 24px;
+      margin-bottom: 24px;
+    }
+
+    .profile-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .profile-info h4 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 4px;
+    }
+
+    .profile-info p {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #10b981;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* Search Type Toggle */
+    .search-type-toggle {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      background: #f3f4f6;
+      padding: 6px;
+      border-radius: 48px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: transparent;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #6b7280;
+    }
+
+    .toggle-btn.active {
+      background: white;
+      color: #667eea;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    }
+
+    /* Input Group */
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 8px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 16px 18px;
+      font-size: 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 24px;
+      background: white;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    /* Button Group */
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 40px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    /* Result Table */
+    .result-section {
+      margin-top: 20px;
+    }
+
+    .result-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .result-table th {
+      text-align: left;
+      padding: 12px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .result-table td {
+      padding: 12px 8px;
+      font-size: 14px;
+      color: #1f2937;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .result-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .sheet-badge {
+      background: #e5e7eb;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #4b5563;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      transition: all 0.3s ease;
+    }
+
+    .loading-content {
+      background: white;
+      border-radius: 48px;
+      padding: 32px 48px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-content p {
+      color: #4b5563;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .dot-wave {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: #667eea;
+      border-radius: 50%;
+      animation: wave 1.2s ease-in-out infinite;
+    }
+
+    .dot:nth-child(1) { animation-delay: 0s; }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes wave {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-10px); opacity: 1; }
+    }
+
+    /* Message Boxes */
+    .info-box {
+      background: #eff6ff;
+      padding: 16px;
+      border-radius: 20px;
+      color: #1e40af;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .error-box {
+      background: #fef2f2;
+      padding: 16px;
+      border-radius: 20px;
+      color: #dc2626;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .success-box {
+      background: #ecfdf5;
+      padding: 16px;
+      border-radius: 20px;
+      color: #059669;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .container {
+        padding: 0;
+      }
+      .glass-card {
+        padding: 20px 16px;
+      }
+      .btn {
+        padding: 12px 16px;
+        font-size: 13px;
+      }
+      .result-table th, .result-table td {
+        font-size: 12px;
+        padding: 10px 6px;
+      }
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-    <div class="card">
-        <h1>🔍 ค้นหาหมายจับ</h1>
-        <div class="sub">ระบบค้นหาจากทุกหมายจับ (แท็บ 55-69)</div>
 
-        <div class="search-type">
-            <label>
-                <input type="radio" name="searchType" value="id13" checked> ค้นหาด้วยเลข 13 หลัก
-            </label>
-            <label>
-                <input type="radio" name="searchType" value="name"> ค้นหาด้วยชื่อ-สกุล
-            </label>
-        </div>
-
-        <input type="text" id="searchInput" placeholder="กรอกเลข 13 หลัก หรือ ชื่อ-สกุล" autocomplete="off">
-
-        <div class="button-group">
-            <button class="btn-search" id="searchBtn">🔎 ค้นหา</button>
-            <button class="btn-clear" id="clearBtn">🗑️ ล้างข้อมูล</button>
-        </div>
-
-        <div id="resultArea">
-            <!-- ผลการค้นหาจะแสดงตรงนี้ -->
-            <div class="info">💡 กรุณากรอกข้อมูลแล้วกดค้นหา</div>
-        </div>
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="loading-content">
+    <div class="spinner"></div>
+    <p>กำลังตรวจสอบสิทธิ์ผู้ใช้งาน</p>
+    <div class="dot-wave">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
     </div>
-    <footer>
-        ระบบติดตามหมายจับ v1.0 | ผ่านการยืนยันตัวตนด้วย LINE
-    </footer>
+    <p style="font-size: 12px; margin-top: 12px; color: #9ca3af;">กรุณารอสักครู่...</p>
+  </div>
 </div>
 
+<div class="container">
+  <div class="glass-card">
+    <div class="header">
+      <h1><i class="fas fa-gavel"></i> ค้นหาหมายจับ</h1>
+      <p>ระบบค้นหาจากฐานข้อมูลหมายจับทั้งหมด</p>
+    </div>
+
+    <div id="profileSection" class="profile-section hidden">
+      <div class="profile-avatar" id="profileAvatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="profile-info">
+        <h4 id="userName">-</h4>
+        <p id="userIdDisplay">กำลังโหลด...</p>
+      </div>
+      <div style="margin-left: auto;">
+        <span class="status-badge"><i class="fas fa-check-circle"></i> พร้อมใช้งาน</span>
+      </div>
+    </div>
+
+    <div class="search-type-toggle">
+      <button class="toggle-btn active" data-type="id13">
+        <i class="fas fa-hashtag"></i> เลข 13 หลัก
+      </button>
+      <button class="toggle-btn" data-type="name">
+        <i class="fas fa-user"></i> ชื่อ-สกุล
+      </button>
+    </div>
+
+    <div class="input-group">
+      <label><i class="fas fa-search"></i> กรอกคำค้นหา</label>
+      <input type="text" id="searchInput" placeholder="กรอกเลข 13 หลัก หรือ ชื่อ-สกุล" autocomplete="off">
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-primary" id="searchBtn">
+        <i class="fas fa-search"></i> ค้นหา
+      </button>
+      <button class="btn btn-secondary" id="clearBtn">
+        <i class="fas fa-eraser"></i> ล้าง
+      </button>
+    </div>
+
+    <div class="result-section" id="resultArea">
+      <div class="info-box">
+        <i class="fas fa-info-circle"></i> กรุณากรอกข้อมูลแล้วกดค้นหา
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://static.line-scdn.net/liff/edge/versions/2.23.0/sdk.js"></script>
 <script>
-    // ========== ส่วนที่ต้องแก้ไข ==========
-    // 🔴 สำคัญ: หลังจากที่เราสร้าง Google Apps Script Web App แล้ว
-    // ให้เอา URL ที่ได้มาใส่ตรงนี้
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxQJvzBmxO09-N4smPuJS4JwS5U8rM738fJRkWFXs-r-sVA-myuLPxjIqZJHj5Y_62fEg/exec";  // <<< เดี๋ยวจะมาใส่ทีหลัง
-    
-    // LIFF Channel ID (จาก LINE Developers Console)
-    const LIFF_ID = "2010276759-IZoVxJjH";  // <<< ใส่ LIFF ID ของคุณ
-    
-    // ===================================
-    
-    let accessToken = null;
-    let userId = null;
-    
-    // ฟังก์ชันเริ่มต้น LIFF
-        async function initLiff() {
-        try {
-            await liff.init({ liffId: LIFF_ID });
-            
-            // ตรวจสอบว่า LIFF init สำเร็จไหม
-            if (!liff.isLoggedIn()) {
-                liff.login();
-                return false;
-            }
-            
-            // ดึงข้อมูลผู้ใช้
-            const profile = await liff.getProfile();
-            userId = profile.userId;
-            accessToken = liff.getAccessToken();
-            console.log("Login success:", userId);
-            return true;
-            
-        } catch(error) {
-            // 🔴 ถ้าเชื่อมต่อ LINE ไม่ได้ ให้แสดง User ID (ถ้ามี)
-            console.error("LIFF Error:", error);
-            showUserIdDebug("เชื่อมต่อ LINE ไม่สำเร็จ", error);
-            return false;
-        }
+  // ========== CONFIGURATION ==========
+  const GAS_URL = "YOUR_GAS_WEBAPP_URL_HERE";  // 🔴 ต้องแก้ไข!
+  const LIFF_ID = "YOUR_LIFF_ID_HERE";          // 🔴 ต้องแก้ไข!
+  // ===================================
+
+  let lineProfile = { userId: '', displayName: '', pictureUrl: '' };
+  let currentSearchType = "id13";
+  let isAuthorized = false;
+
+  // แสดง/ซ่อน Loading
+  function showLoading(show, customText = null) {
+    const overlay = document.getElementById("loadingOverlay");
+    if (show) {
+      if (customText) {
+        overlay.querySelector("p").innerText = customText;
+      }
+      overlay.style.display = "flex";
+    } else {
+      overlay.style.display = "none";
+      // reset text
+      overlay.querySelector("p").innerText = "กำลังตรวจสอบสิทธิ์ผู้ใช้งาน";
     }
+  }
+
+  // แสดงผลลัพธ์
+  function showResult(type, message, data = null) {
+    const resultDiv = document.getElementById("resultArea");
     
-    // ✅ ฟังก์ชันใหม่: แสดง User ID เพื่อแจ้งแอดมิน
-    function showUserIdDebug(message, error = null) {
-        let debugHtml = `
-            <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 16px; padding: 20px; margin: 20px 0;">
-                <div style="color: #856404; font-weight: bold; margin-bottom: 12px;">
-                    ⚠️ ${message}
-                </div>
-                <div style="background: #1e1e2f; color: #50fa7b; padding: 16px; border-radius: 12px; font-family: monospace; font-size: 13px; word-break: break-all;">
-                    <strong>🔍 ข้อมูลสำหรับแอดมิน:</strong><br>
-                    User ID ของคุณ: <span style="color: #ffb86c; font-weight: bold;" id="debugUserId">กำลังโหลด...</span><br>
-                    <span style="font-size: 12px; color: #888;">📌 กรุณาส่ง User ID นี้ให้แอดมินเพื่อขอสิทธิ์เข้าใช้งาน</span>
-                </div>
-                <div style="margin-top: 12px;">
-                    <button onclick="copyDebugUserId()" style="background: #ffc107; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">📋 คัดลอก User ID</button>
-                    <button onclick="location.reload()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">⟳ ลองใหม่</button>
-                </div>
-            </div>
+    if (type === "info") {
+      resultDiv.innerHTML = `<div class="info-box"><i class="fas fa-info-circle"></i> ${message}</div>`;
+    } else if (type === "error") {
+      resultDiv.innerHTML = `<div class="error-box"><i class="fas fa-exclamation-triangle"></i> ${message}</div>`;
+    } else if (type === "success") {
+      resultDiv.innerHTML = `<div class="success-box"><i class="fas fa-check-circle"></i> ${message}</div>`;
+    } else if (type === "table" && data) {
+      if (data.length === 0) {
+        resultDiv.innerHTML = `<div class="info-box"><i class="fas fa-search"></i> ไม่พบข้อมูลที่ค้นหา</div>`;
+        return;
+      }
+      
+      let html = `
+        <div class="result-title">
+          <i class="fas fa-list"></i> ผลการค้นหา (${data.length} รายการ)
+        </div>
+        <table class="result-table">
+          <thead>
+            <tr><th>เลขที่หมายจับ</th><th>ชื่อ-สกุล</th><th>สถานะ</th><th>ชีท</th></tr>
+          </thead>
+          <tbody>
+      `;
+      
+      for (let row of data) {
+        html += `
+          <tr>
+            <td>${escapeHtml(row.warrantNo || '-')}</td>
+            <td>${escapeHtml(row.fullName || '-')}</td>
+            <td>${escapeHtml(row.status || '-')}</td>
+            <td><span class="sheet-badge">${escapeHtml(row.sheetName || '-')}</span></td>
+          </tr>
         `;
-        
-        // แสดงผลตรง resultArea
-        const resultDiv = document.getElementById("resultArea");
-        if (resultDiv) {
-            resultDiv.innerHTML = debugHtml;
-        }
-        
-        // พยายามดึง User ID จาก LIFF (ถ้ายังพอมี)
-        if (liff && liff.isLoggedIn && liff.isLoggedIn()) {
-            liff.getProfile().then(profile => {
-                document.getElementById("debugUserId").innerText = profile.userId;
-            }).catch(() => {
-                document.getElementById("debugUserId").innerText = "ไม่สามารถดึง User ID ได้ (ยังไม่ได้ Login LINE)";
-            });
-        } else {
-            document.getElementById("debugUserId").innerText = "ไม่สามารถดึง User ID ได้ (กรุณา Login LINE ก่อน)";
-        }
+      }
+      
+      html += `</tbody></table>`;
+      resultDiv.innerHTML = html;
     }
-    
-    function copyDebugUserId() {
-        const userIdText = document.getElementById("debugUserId").innerText;
-        if (userIdText && userIdText !== "กำลังโหลด...") {
-            navigator.clipboard.writeText(userIdText);
-            alert("✅ คัดลอก User ID แล้ว: " + userIdText);
-        } else {
-            alert("❌ ไม่มี User ID ให้คัดลอก");
-        }
-    }
-    
-    // ฟังก์ชันเรียก Google Apps Script
-       async function callGas(action, payload = {}) {
-        if (!GAS_URL) {
-            showUserIdDebug("ยังไม่ได้ตั้งค่า GAS_URL กรุณาติดต่อแอดมิน");
-            throw new Error("ยังไม่ได้ตั้งค่า GAS_URL");
-        }
-        if (!accessToken) {
-            showUserIdDebug("ยังไม่ Login LINE หรือ Token ไม่ถูกต้อง", { noToken: true });
-            throw new Error("ยังไม่ Login LINE");
-        }
-        
-        try {
-            const response = await fetch(GAS_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    action: action,
-                    lineAccessToken: accessToken,
-                    userId: userId,
-                    ...payload
-                })
-            });
-            
-            const result = await response.json();
-            
-            // ถ้า Backend ตอบว่า Unauthorized ให้แสดง User ID
-            if (result.success === false && (result.error === "Unauthorized user" || result.error.includes("Unauthorized"))) {
-                showUserIdDebug("❌ คุณยังไม่มีสิทธิ์ใช้งานระบบ กรุณาติดต่อแอดมิน", { authError: true });
-                throw new Error(result.error);
-            }
-            
-            return result;
-            
-        } catch(err) {
-            console.error("callGas error:", err);
-            showUserIdDebug("ไม่สามารถเชื่อมต่อระบบได้: " + err.message, { networkError: true });
-            throw err;
-        }
-    }
-    
-    // แสดงผลการค้นหา
-    function renderResults(data) {
-        const resultDiv = document.getElementById("resultArea");
-        if (!data || data.length === 0) {
-            resultDiv.innerHTML = '<div class="info">📭 ไม่พบข้อมูลที่ค้นหา</div>';
-            return;
-        }
-        
-        let html = '<table class="result-table">';
-        html += '<thead><tr><th>เลขที่หมายจับ</th><th>ชื่อ-สกุล</th><th>สถานะ</th><th>ชีท</th></tr></thead><tbody>';
-        
-        for (let row of data) {
-            html += `<tr>
-                        <td>${escapeHtml(row.warrantNo || '-')}</td>
-                        <td>${escapeHtml(row.fullName || '-')}</td>
-                        <td>${escapeHtml(row.status || '-')}</td>
-                        <td>${escapeHtml(row.sheetName || '-')}</td>
-                     </tr>`;
-        }
-        html += '</tbody></table>';
-        resultDiv.innerHTML = html;
-    }
-    
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-    
-    function showError(msg) {
-        document.getElementById("resultArea").innerHTML = `<div class="error">❌ ${escapeHtml(msg)}</div>`;
-    }
-    
-    function showLoading() {
-        document.getElementById("resultArea").innerHTML = '<div class="loading">⏳ กำลังค้นหา...</div>';
-    }
-    
-    // ฟังก์ชันหลัก: ค้นหา
-    async function performSearch() {
-        const searchTypeElem = document.querySelector('input[name="searchType"]:checked');
-        const searchType = searchTypeElem ? searchTypeElem.value : "id13";
-        const keyword = document.getElementById("searchInput").value.trim();
-        
-        if (!keyword) {
-            showError("กรุณากรอกคำค้นหา");
-            return;
-        }
-        
-        // Validation เบื้องต้น
-        if (searchType === "id13") {
-            if (!/^\d{13}$/.test(keyword)) {
-                showError("เลข 13 หลักต้องเป็นตัวเลข 13 ตัวเท่านั้น");
-                return;
-            }
-        } else {
-            if (!/^[ก-๙a-zA-Z\s]+$/.test(keyword)) {
-                showError("ชื่อ-สกุลต้องเป็นตัวอักษรเท่านั้น");
-                return;
-            }
-        }
-        
-        showLoading();
-        
-        try {
-            const result = await callGas("search", {
-                searchType: searchType,
-                keyword: keyword
-            });
-            
-            if (result.success === false) {
-                showError(result.error || "เกิดข้อผิดพลาดในการค้นหา");
-                return;
-            }
-            
-            renderResults(result.data || []);
-        } catch (err) {
-            console.error(err);
-            showError("ไม่สามารถติดต่อระบบได้: " + err.message);
-        }
-    }
-    
-    function clearForm() {
-        document.getElementById("searchInput").value = "";
-        document.getElementById("resultArea").innerHTML = '<div class="info">✨ ล้างข้อมูลเรียบร้อย พร้อมค้นหาใหม่</div>';
-    }
-    
-    // Event Listeners
-    document.getElementById("searchBtn").addEventListener("click", performSearch);
-    document.getElementById("clearBtn").addEventListener("click", clearForm);
-    
-    // กด Enter ก็ค้นหา
-    document.getElementById("searchInput").addEventListener("keypress", function(e) {
-        if (e.key === "Enter") performSearch();
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
     });
+  }
+
+  function showDebugUserId(message, userIdValue = null) {
+    const userIdToShow = userIdValue || lineProfile.userId || "ไม่สามารถดึง User ID ได้";
+    const resultDiv = document.getElementById("resultArea");
     
-    // เริ่มต้นระบบ
-    window.addEventListener("DOMContentLoaded", async () => {
-        try {
-            await initLiff();
-            console.log("พร้อมใช้งาน");
-        } catch (err) {
-            console.error("LIFF init error", err);
-            document.getElementById("resultArea").innerHTML = '<div class="error">❌ ไม่สามารถเชื่อมต่อ LINE ได้ กรุณาลองใหม่</div>';
+    let debugHtml = `
+      <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 24px; padding: 20px;">
+        <div style="color: #92400e; font-weight: 600; margin-bottom: 12px;">
+          <i class="fas fa-exclamation-triangle"></i> ${message}
+        </div>
+        <div style="background: #1f2937; color: #10b981; padding: 16px; border-radius: 16px; font-family: monospace; font-size: 13px; word-break: break-all;">
+          <strong style="color: #fbbf24;">📌 User ID ของคุณ:</strong><br>
+          <span id="debugUserIdText">${userIdToShow}</span>
+        </div>
+        <div style="margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap;">
+          <button onclick="copyDebugUserId()" style="background: #f59e0b; color: white; border: none; padding: 10px 20px; border-radius: 40px; cursor: pointer;">
+            <i class="fas fa-copy"></i> คัดลอก User ID
+          </button>
+          <button onclick="location.reload()" style="background: #6b7280; color: white; border: none; padding: 10px 20px; border-radius: 40px; cursor: pointer;">
+            <i class="fas fa-sync-alt"></i> ลองใหม่
+          </button>
+        </div>
+        <div style="margin-top: 12px; padding: 12px; background: #fffbeb; border-radius: 12px; font-size: 12px; color: #92400e;">
+          <i class="fas fa-envelope"></i> กรุณาส่ง User ID นี้ให้แอดมินเพื่อขอสิทธิ์เข้าใช้งาน
+        </div>
+      </div>
+    `;
+    
+    resultDiv.innerHTML = debugHtml;
+    window.copyDebugUserId = function() {
+      const text = document.getElementById("debugUserIdText").innerText;
+      navigator.clipboard.writeText(text);
+      alert("✅ คัดลอก User ID แล้ว: " + text);
+    };
+  }
+
+  // เรียก GAS
+  async function callGas(action, payload = {}) {
+    if (!GAS_URL || GAS_URL === "YOUR_GAS_WEBAPP_URL_HERE") {
+      showDebugUserId("ยังไม่ได้ตั้งค่า GAS_URL กรุณาติดต่อแอดมิน", "กรุณาตั้งค่า GAS_URL");
+      throw new Error("GAS_URL not configured");
+    }
+    
+    if (!lineProfile.userId) {
+      showDebugUserId("ยังไม่ Login LINE หรือไม่ได้รับอนุญาต", "กรุณา Login LINE ก่อน");
+      throw new Error("Not logged in");
+    }
+    
+    try {
+      const response = await fetch(GAS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: action,
+          userId: lineProfile.userId,
+          displayName: lineProfile.displayName,
+          ...payload
+        })
+      });
+      
+      return await response.json();
+      
+    } catch(err) {
+      console.error("callGas error:", err);
+      showResult("error", "ไม่สามารถเชื่อมต่อระบบได้: " + err.message);
+      throw err;
+    }
+  }
+
+  // ค้นหา
+  async function performSearch() {
+    const keyword = document.getElementById("searchInput").value.trim();
+    
+    if (!keyword) {
+      showResult("error", "กรุณากรอกคำค้นหา");
+      return;
+    }
+    
+    if (currentSearchType === "id13") {
+      if (!/^\d{13}$/.test(keyword)) {
+        showResult("error", "เลข 13 หลักต้องเป็นตัวเลข 13 ตัวเท่านั้น");
+        return;
+      }
+    } else {
+      if (!/^[ก-๙a-zA-Z\s]+$/.test(keyword)) {
+        showResult("error", "ชื่อ-สกุลต้องเป็นตัวอักษรเท่านั้น");
+        return;
+      }
+    }
+    
+    showLoading(true, "กำลังค้นหาข้อมูล...");
+    
+    try {
+      const result = await callGas("search", {
+        searchType: currentSearchType,
+        keyword: keyword
+      });
+      
+      if (result.success === false) {
+        if (result.error === "Unauthorized user") {
+          showDebugUserId("❌ คุณยังไม่มีสิทธิ์ใช้งานระบบ", lineProfile.userId);
+        } else {
+          showResult("error", result.error || "เกิดข้อผิดพลาดในการค้นหา");
         }
+        return;
+      }
+      
+      showResult("table", "", result.data || []);
+      
+    } catch(err) {
+      console.error(err);
+      showResult("error", "เกิดข้อผิดพลาด: " + err.message);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  function clearForm() {
+    document.getElementById("searchInput").value = "";
+    showResult("info", "ล้างข้อมูลเรียบร้อย พร้อมค้นหาใหม่");
+  }
+
+  // LIFF Init
+  function initLiff() {
+    return new Promise((resolve, reject) => {
+      liff.init({ liffId: LIFF_ID }, () => {
+        if (liff.isLoggedIn()) {
+          liff.getProfile().then(profile => {
+            lineProfile.userId = profile.userId;
+            lineProfile.displayName = profile.displayName;
+            lineProfile.pictureUrl = profile.pictureUrl || "";
+            
+            // อัปเดต UI
+            document.getElementById("userName").innerText = profile.displayName;
+            document.getElementById("userIdDisplay").innerText = profile.userId;
+            
+            const avatarDiv = document.getElementById("profileAvatar");
+            if (profile.pictureUrl) {
+              avatarDiv.innerHTML = `<img src="${profile.pictureUrl}" alt="Profile">`;
+            } else {
+              avatarDiv.innerHTML = `<i class="fas fa-user"></i>`;
+            }
+            
+            document.getElementById("profileSection").classList.remove("hidden");
+            
+            resolve(true);
+          }).catch(err => {
+            console.error("getProfile error:", err);
+            reject(err);
+          });
+        } else {
+          liff.login();
+          reject(new Error("Need login"));
+        }
+      }, err => {
+        console.error("liff.init error:", err);
+        reject(err);
+      });
     });
+  }
+
+  // Event Listeners
+  document.getElementById("searchBtn").addEventListener("click", performSearch);
+  document.getElementById("clearBtn").addEventListener("click", clearForm);
+  document.getElementById("searchInput").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") performSearch();
+  });
+  
+  document.querySelectorAll(".toggle-btn").forEach(btn => {
+    btn.addEventListener("click", function() {
+      document.querySelectorAll(".toggle-btn").forEach(b => b.classList.remove("active"));
+      this.classList.add("active");
+      currentSearchType = this.getAttribute("data-type");
+      
+      const input = document.getElementById("searchInput");
+      input.placeholder = currentSearchType === "id13" ? "กรอกเลข 13 หลัก" : "กรอกชื่อ-สกุล";
+      input.value = "";
+    });
+  });
+
+  // เริ่มต้น
+  window.addEventListener("DOMContentLoaded", async () => {
+    showLoading(true);
+    
+    try {
+      await initLiff();
+      showResult("info", "✅ พร้อมใช้งาน กรุณาค้นหาข้อมูล");
+    } catch (err) {
+      console.error("Init error:", err);
+      showDebugUserId("เชื่อมต่อ LINE ไม่สำเร็จ กรุณาตรวจสอบการตั้งค่า", "ไม่สามารถเชื่อมต่อ LINE ได้");
+    } finally {
+      setTimeout(() => showLoading(false), 500);
+    }
+  });
 </script>
 </body>
 </html>
