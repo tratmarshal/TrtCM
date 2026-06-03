@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>จัดการหมายจับ</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #1e3a5f;
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: #f1f5f9;
+        }
+        .status-badge {
+            background: #e9ecef;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 12px;
+            display: inline-block;
+        }
+        .btn-edit {
+            background: #2c7da0;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .btn-add {
+            background: #1e3a5f;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            width: 90%;
+            border-radius: 28px;
+            padding: 24px;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 16px;
+            border: 1px solid #ccc;
+        }
+        button {
+            cursor: pointer;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        .error {
+            background: #fee2e2;
+            padding: 12px;
+            border-radius: 16px;
+            color: #b91c1c;
+        }
+        .info {
+            background: #e6f7ff;
+            padding: 12px;
+            border-radius: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1>📋 จัดการรายการดำเนินการ</h1>
+        <div id="pendingList">
+            <div class="loading">กำลังโหลดข้อมูล...</div>
+        </div>
+        <button class="btn-add" id="addProcessBtn">+ เพิ่มรายการดำเนินการ</button>
+    </div>
+</div>
+
+<!-- Modal สำหรับเพิ่มรายการ -->
+<div id="addModal" class="modal">
+    <div class="modal-content">
+        <h3>➕ เพิ่มรายการดำเนินการ</h3>
+        <label>เลข 13 หลัก:</label>
+        <input type="text" id="modalId13" placeholder="กรอก 13 หลัก">
+        <label>เหตุผล:</label>
+        <input type="text" id="modalReason" placeholder="เช่น ตำรวจจับ / มอบตัว">
+        <button id="confirmAddBtn" style="background:#1e3a5f;color:white;width:100%;">ยืนยัน</button>
+        <button id="closeModalBtn" style="margin-top:8px;background:#ccc;width:100%;">ยกเลิก</button>
+    </div>
+</div>
+
+<!-- Modal สำหรับแก้ไขสถานะ -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h3>✏️ แก้ไขสถานะ</h3>
+        <p id="editProcessId" style="display:none;"></p>
+        <label>สถานะใหม่:</label>
+        <select id="editStatusSelect">
+            <option>เสนอผู้พิพากษา</option>
+            <option>รอหมายศาล</option>
+            <option>รอประสานงาน</option>
+            <option>อยู่ระหว่างติดตามตัว</option>
+            <option>เสร็จสิ้น</option>
+        </select>
+        <button id="confirmEditBtn" style="background:#2c7da0;color:white;width:100%;">บันทึก</button>
+        <button id="closeEditModalBtn" style="margin-top:8px;background:#ccc;width:100%;">ยกเลิก</button>
+    </div>
+</div>
+
+<script>
+    // ========== ต้องแก้ไข ==========
+    const GAS_URL = "";  // จะใส่ทีหลัง
+    const LIFF_ID = "YOUR_LIFF_ID";
+    // ==============================
+    
+    let accessToken = null;
+    let userId = null;
+    
+    async function initLiff() {
+        await liff.init({ liffId: LIFF_ID });
+        if (!liff.isLoggedIn()) liff.login();
+        const profile = await liff.getProfile();
+        userId = profile.userId;
+        accessToken = liff.getAccessToken();
+    }
+    
+    async function callGas(action, payload = {}) {
+        if (!GAS_URL) throw new Error("GAS_URL not set");
+        const res = await fetch(GAS_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action, lineAccessToken: accessToken, userId, ...payload })
+        });
+        return await res.json();
+    }
+    
+    async function loadPending() {
+        const container = document.getElementById("pendingList");
+        container.innerHTML = '<div class="loading">⏳ โหลดรายการค้าง...</div>';
+        try {
+            const result = await callGas("getPending");
+            if (!result.success) throw new Error(result.error);
+            const list = result.data || [];
+            if (list.length === 0) {
+                container.innerHTML = '<div class="info">✅ ไม่มีรายการค้าง</div>';
+                return;
+            }
+            let html = '<table><thead><tr><th>เลข 13 หลัก</th><th>ชื่อ-สกุล</th><th>เหตุผล</th><th>สถานะ</th><th></th></tr></thead><tbody>';
+            for (let item of list) {
+                html += `<tr>
+                            <td>${escapeHtml(item.id13)}</td>
+                            <td>${escapeHtml(item.fullName)}</td>
+                            <td>${escapeHtml(item.reason)}</td>
+                            <td><span class="status-badge">${escapeHtml(item.status)}</span></td>
+                            <td><button class="btn-edit" data-row="${item.rowId}" data-status="${escapeHtml(item.status)}">แก้ไข</button></td>
+                         </tr>`;
+            }
+            html += '</tbody></table>';
+            container.innerHTML = html;
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const rowId = btn.getAttribute('data-row');
+                    openEditModal(rowId);
+                });
+            });
+        } catch(err) {
+            container.innerHTML = `<div class="error">❌ ${err.message}</div>`;
+        }
+    }
+    
+    function openEditModal(rowId) {
+        document.getElementById("editProcessId").innerText = rowId;
+        document.getElementById("editModal").style.display = "flex";
+    }
+    
+    async function updateStatus() {
+        const rowId = document.getElementById("editProcessId").innerText;
+        const newStatus = document.getElementById("editStatusSelect").value;
+        if (!rowId) return;
+        try {
+            const result = await callGas("updateStatus", { rowId: rowId, newStatus: newStatus });
+            if (result.success) {
+                document.getElementById("editModal").style.display = "none";
+                await loadPending();
+            } else {
+                alert("อัปเดตไม่สำเร็จ: " + result.error);
+            }
+        } catch(err) {
+            alert("Error: " + err.message);
+        }
+    }
+    
+    async function addProcess() {
+        const id13 = document.getElementById("modalId13").value.trim();
+        const reason = document.getElementById("modalReason").value.trim();
+        if (!id13 || !/^\d{13}$/.test(id13)) {
+            alert("เลข 13 หลักไม่ถูกต้อง");
+            return;
+        }
+        if (!reason) {
+            alert("กรุณาใส่เหตุผล");
+            return;
+        }
+        try {
+            const result = await callGas("addProcess", { id13: id13, reason: reason });
+            if (result.success) {
+                document.getElementById("addModal").style.display = "none";
+                document.getElementById("modalId13").value = "";
+                document.getElementById("modalReason").value = "";
+                await loadPending();
+            } else {
+                alert("เพิ่มไม่สำเร็จ: " + result.error);
+            }
+        } catch(err) {
+            alert("Error: " + err.message);
+        }
+    }
+    
+    function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+    
+    document.getElementById("addProcessBtn").onclick = () => document.getElementById("addModal").style.display = "flex";
+    document.getElementById("closeModalBtn").onclick = () => document.getElementById("addModal").style.display = "none";
+    document.getElementById("closeEditModalBtn").onclick = () => document.getElementById("editModal").style.display = "none";
+    document.getElementById("confirmAddBtn").onclick = addProcess;
+    document.getElementById("confirmEditBtn").onclick = updateStatus;
+    
+    window.addEventListener("DOMContentLoaded", async () => {
+        await initLiff();
+        await loadPending();
+    });
+</script>
+</body>
+</html>
