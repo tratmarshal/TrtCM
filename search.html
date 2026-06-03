@@ -4,13 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <meta name="theme-color" content="#050b14">
-  <title>Warrant Tracker · ค้นหาหมายจับ</title>
+  <title>Warrant Tracker | ค้นหาหมายจับ</title>
   
-  <!-- Font & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <!-- Modern Fonts and Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
+    :root {
+      --primary-color: #2563eb;
+      --bg-dark: #050b14;
+      --card-bg: #0f172a;
+      --surface-bg: #111827;
+      --border-color: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dark: #64748b;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -18,510 +32,664 @@
     }
 
     body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: radial-gradient(circle at 20% 30%, #0A0F1E, #03060C);
+      font-family: 'IBM Plex Sans Thai', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(180deg, #0b1220 0%, #050a12 100%);
       min-height: 100vh;
-      padding: 32px 24px;
-      color: #EFF3F8;
+      padding: 24px 16px;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* คอนเทนเนอร์หลัก – จำกัดความกว้าง เน้นอ่านง่าย */
     .container {
-      max-width: 860px;
+      width: 100%;
+      max-width: 680px;
       margin: 0 auto;
+      animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* การ์ดหลัก – neo‑brutalism สะอาดคม */
-    .core-card {
-      background: rgba(12, 18, 28, 0.86);
-      backdrop-filter: blur(14px);
-      border-radius: 40px;
-      border: 1px solid rgba(48, 78, 110, 0.35);
-      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.05);
-      padding: 32px 32px 40px;
-      transition: all 0.25s ease;
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* หัวข้อ – เท่ มีพลัง */
-    .brand {
+    .system-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .header {
       text-align: center;
       margin-bottom: 32px;
     }
-    .brand h1 {
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      background: linear-gradient(130deg, #FFFFFF, #70B9FF, #2C7DA0);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .brand h1 i {
-      background: none;
-      -webkit-text-fill-color: #3B82F6;
-      color: #3B82F6;
+
+    .system-title {
       font-size: 32px;
-    }
-    .brand .sub {
-      font-size: 13px;
-      font-weight: 500;
-      color: #94A3B8;
-      margin-top: 8px;
-      letter-spacing: 0.3px;
-      border-top: 1px dashed rgba(59,130,246,0.3);
-      display: inline-block;
-      padding-top: 8px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-transform: uppercase;
     }
 
-    /* ส่วนโปรไฟล์ – กระชับเท่ ไม่มี userId รก */
-    .profile-panel {
+    .system-subtitle {
+      margin-top: 6px;
+      color: var(--text-dark);
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* Profile Section - User Bar */
+    .user-bar {
+      height: 56px;
       display: flex;
       align-items: center;
-      gap: 16px;
-      background: rgba(0, 0, 0, 0.35);
-      border-radius: 80px;
-      padding: 8px 20px 8px 12px;
-      margin-bottom: 32px;
-      border: 0.5px solid rgba(59,130,246,0.2);
-      backdrop-filter: blur(4px);
+      gap: 12px;
+      background: var(--surface-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0 16px;
+      margin-bottom: 24px;
     }
-    .avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 40px;
-      background: linear-gradient(145deg, #1E2A3A, #0F172A);
+
+    .profile-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--border-color);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      color: #60A5FA;
+      color: var(--text-muted);
+      font-size: 14px;
       overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
-    .avatar img {
+
+    .profile-avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    .profile-text {
-      flex: 1;
-    }
-    .profile-text h4 {
-      font-size: 16px;
-      font-weight: 700;
-      color: #F1F5F9;
-      letter-spacing: -0.2px;
-    }
-    .badge-online {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(34,197,94,0.18);
-      border: 0.5px solid rgba(34,197,94,0.4);
-      padding: 4px 12px;
-      border-radius: 40px;
-      font-size: 11px;
+
+    .user-bar span {
+      color: var(--text-main);
+      font-size: 14px;
       font-weight: 600;
-      color: #86EFAC;
-    }
-    .badge-online i {
-      font-size: 8px;
-      color: #4ADE80;
+      flex: 1;
     }
 
-    /* toggle switch – คล้าย terminal segment */
-    .search-modes {
+    .online-indicator {
       display: flex;
-      background: #0A101A;
-      padding: 4px;
-      border-radius: 56px;
-      margin-bottom: 28px;
-      border: 1px solid #1E2A3A;
+      align-items: center;
+      gap: 8px;
     }
-    .mode-btn {
+
+    .online-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: #10b981;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulseGreen 2s infinite;
+    }
+
+    @keyframes pulseGreen {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Segmented Control (Toggle) */
+    .search-type-toggle {
+      display: flex;
+      background: var(--surface-bg);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border-color);
+    }
+
+    .toggle-btn {
       flex: 1;
-      background: transparent;
-      border: none;
       padding: 12px 8px;
-      border-radius: 48px;
-      font-weight: 600;
+      border: none;
+      background: transparent;
+      border-radius: 10px;
       font-size: 14px;
-      color: #8CA3BA;
+      font-weight: 600;
+      color: var(--text-muted);
       cursor: pointer;
-      transition: 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      transition: var(--transition);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      font-family: 'Inter', monospace;
-    }
-    .mode-btn.active {
-      background: #0F212F;
-      color: #60A5FA;
-      box-shadow: 0 0 8px rgba(59,130,246,0.2);
-      border: 0.5px solid #2D4A6E;
     }
 
-    /* อินพุต – sharp, เน้นคอนทราสต์ */
-    .input-field {
-      margin-bottom: 28px;
-    }
-    .input-field label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #7E8CA5;
-      margin-bottom: 12px;
-    }
-    .input-field input {
-      width: 100%;
-      background: #070C14;
-      border: 1.5px solid #1F2C3C;
-      border-radius: 28px;
-      padding: 18px 22px;
-      font-size: 16px;
-      font-weight: 500;
-      color: #F0F4FA;
-      font-family: 'Inter', monospace;
-      transition: 0.2s;
-    }
-    .input-field input:focus {
-      outline: none;
-      border-color: #3B82F6;
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
-      background: #0B111C;
-    }
-    .input-field input::placeholder {
-      color: #334155;
-      font-weight: 400;
+    .toggle-btn.active {
+      background: var(--primary-color);
+      color: #ffffff;
     }
 
-    /* ปุ่มคู่ – โทนเข้ม ตัดขาว */
-    .action-group {
+    /* Inputs */
+    .input-group {
+      margin-bottom: 24px;
+    }
+
+    .input-group label {
       display: flex;
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-    .btn {
-      flex: 1;
-      padding: 14px 12px;
-      border-radius: 44px;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
       font-weight: 700;
-      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-group input {
+      width: 100%;
+      height: 60px;
+      padding: 0 20px;
+      font-size: 18px;
+      border: 1px solid #334155;
+      border-radius: var(--radius-md);
+      background: #0b1220;
+      color: #ffffff;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+
+    .input-group input::placeholder {
+      color: #475569;
+    }
+
+    /* Buttons */
+    .button-group {
+      margin-bottom: 24px;
+    }
+
+    .search-btn {
+      width: 100%;
+      height: 56px;
+      background: var(--primary-color);
+      color: #ffffff;
+      font-weight: 700;
       border: none;
+      border-radius: var(--radius-md);
+      font-size: 16px;
       cursor: pointer;
+      transition: var(--transition);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-    .btn-primary {
-      background: linear-gradient(95deg, #1E3A5F, #0F2C44);
-      color: white;
-      border: 1px solid #2B5580;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    .btn-primary:hover {
-      background: #2563EB;
-      border-color: #3B82F6;
-      transform: translateY(-1px);
-    }
-    .btn-secondary {
-      background: #111A26;
-      color: #B9C8E3;
-      border: 1px solid #2A394C;
-    }
-    .btn-secondary:hover {
-      background: #1F2C3F;
-      color: #E2E8F0;
+      letter-spacing: 0.5px;
     }
 
-    /* ส่วนแสดงผล – เทเบิลเท่ๆ , ไม่รก */
-    .result-area {
-      margin-top: 8px;
-      animation: fadeSlide 0.3s ease;
-    }
-    @keyframes fadeSlide {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+    .search-btn:hover {
+      background: #1d4ed8;
     }
 
-    .info-card, .error-card, .success-card {
-      background: rgba(0, 0, 0, 0.45);
-      backdrop-filter: blur(8px);
-      border-radius: 28px;
-      padding: 18px 24px;
-      font-size: 14px;
-      font-weight: 500;
+    .search-btn:active {
+      transform: scale(0.99);
+    }
+
+    /* Results */
+    .result-section {
+      min-height: 80px;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .result-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       display: flex;
       align-items: center;
-      gap: 14px;
-      border-left: 4px solid;
+      gap: 8px;
     }
-    .info-card { border-left-color: #3B82F6; color: #B9D0F0; background: rgba(30,58,95,0.25);}
-    .error-card { border-left-color: #EF4444; color: #FFB3B3; background: rgba(127,29,29,0.2);}
-    .success-card { border-left-color: #22C55E; color: #BBF7D0; background: rgba(21,128,61,0.2);}
 
-    /* ตารางผลลัพธ์ – ขอบคม อ่านง่าย */
-    .table-wrapper {
-      background: #0C111C;
-      border-radius: 28px;
-      border: 1px solid #1F2C3F;
-      overflow-x: auto;
+    .result-title i {
+      color: var(--primary-color);
     }
-    .warrant-table {
+
+    /* Table Intelligence UI */
+    .table-container {
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      background: var(--card-bg);
+    }
+
+    .result-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
-    }
-    .warrant-table th {
       text-align: left;
-      padding: 16px 18px;
+    }
+
+    .result-table th {
+      padding: 14px 16px;
+      font-size: 11px;
       font-weight: 700;
-      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--surface-bg);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #7E8CA5;
-      background: #070E18;
-      border-bottom: 1px solid #1E2F40;
+      border-bottom: 1px solid var(--border-color);
     }
-    .warrant-table td {
-      padding: 16px 18px;
+
+    .result-table td {
+      padding: 16px;
+      font-size: 14px;
       font-weight: 500;
-      color: #E4EDF5;
-      border-bottom: 1px solid #1A2535;
+      color: var(--text-main);
+      border-bottom: 1px solid var(--border-color);
     }
-    .warrant-table tr:last-child td {
+
+    .result-table tbody tr {
+      transition: background 0.15s;
+    }
+
+    .result-table tbody tr:hover {
+      background-color: var(--surface-bg);
+    }
+
+    .result-table tbody tr:last-child td {
       border-bottom: none;
     }
-    .warrant-table tr:hover td {
-      background: rgba(59,130,246,0.08);
-    }
-    .badge-sheet {
-      background: #0F1A28;
-      padding: 4px 12px;
-      border-radius: 60px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #90CDF4;
-      display: inline-block;
-    }
-    /* สถานะ dynamic ดู sharp */
-    .status-text {
-      font-weight: 700;
-    }
 
-    /* Loading overlay – แบบ minimal หนักแน่น */
-    .modal-loader {
-      position: fixed;
-      inset: 0;
-      background: rgba(3, 8, 16, 0.92);
-      backdrop-filter: blur(6px);
-      display: flex;
+    /* Custom Military Status Badges */
+    .badge {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      visibility: hidden;
-      opacity: 0;
-      transition: 0.2s;
-      z-index: 1000;
-    }
-    .modal-loader.active {
-      visibility: visible;
-      opacity: 1;
-    }
-    .loader-box {
-      background: #0E1622;
-      border-radius: 48px;
-      padding: 32px 48px;
-      text-align: center;
-      border: 1px solid #2D4F6E;
-      box-shadow: 0 20px 35px -12px black;
-    }
-    .loader-spinner {
-      width: 44px;
-      height: 44px;
-      border: 3px solid #1E2F44;
-      border-top-color: #3B82F6;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      margin: 0 auto 18px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loader-box p {
-      font-weight: 600;
-      color: #CBD5E1;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
-    /* responsive */
-    @media (max-width: 580px) {
-      body { padding: 16px; }
-      .core-card { padding: 24px 18px; }
-      .action-group { flex-direction: column; gap: 12px; }
-      .brand h1 { font-size: 24px; }
-      .warrant-table th, .warrant-table td { padding: 12px 12px; font-size: 12px; }
+    .badge.danger {
+      background: #450a0a;
+      color: #fca5a5;
+      border: 1px solid #7f1d1d;
+    }
+
+    .badge.success {
+      background: #052e16;
+      color: #86efac;
+      border: 1px solid #064e3b;
+    }
+
+    .badge.neutral {
+      background: var(--surface-bg);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+
+    /* Terminal Status Boxes */
+    .info-box, .error-box, .success-box {
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      line-height: 1.5;
+    }
+
+    .info-box {
+      background: var(--surface-bg);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+
+    .error-box {
+      background: #1c1917;
+      color: #f87171;
+      border: 1px solid #7f1d1d;
+    }
+
+    .success-box {
+      background: #064e3b;
+      color: #a7f3d0;
+      border: 1px solid #047857;
+    }
+
+    /* Intel Loading Screen */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 11, 20, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+    
+    .loading-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .loading-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      text-align: center;
+      width: 320px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    }
+
+    .loading-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #ffffff;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .loading-subtitle {
+      color: var(--text-dark);
+      font-size: 13px;
+      margin-bottom: 24px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .loading-bar-container {
+      width: 100%;
+      height: 4px;
+      background: #1e293b;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .loading-bar {
+      width: 50%;
+      height: 100%;
+      background: var(--primary-color);
+      border-radius: 999px;
+      animation: loadingSweep 1.5s infinite ease-in-out;
+    }
+
+    @keyframes loadingSweep {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 600px) {
+      .system-card { padding: 24px; }
+      .system-title { font-size: 26px; }
+      .user-bar { flex-direction: row; text-align: left; }
+      .input-group input { height: 54px; font-size: 16px; }
+      .search-btn { height: 50px; font-size: 15px; }
+      .result-table th, .result-table td { padding: 12px 10px; font-size: 13px; }
     }
 
     .hidden { display: none !important; }
+
+    /* Tactical Debug Card */
+    .debug-card {
+      background: #111827;
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid #ef4444;
+    }
   </style>
 </head>
 <body>
 
-<div id="globalLoader" class="modal-loader active">
-  <div class="loader-box">
-    <div class="loader-spinner"></div>
-    <p id="loaderMsg">กำลังเชื่อมต่อระบบรักษาความปลอดภัย</p>
+<!-- High-Tech Intelligence Loading State -->
+<div id="loadingOverlay" class="loading-overlay active">
+  <div class="loading-content">
+    <div class="loading-title">WARRANT TRACKER</div>
+    <div class="loading-subtitle" id="loadingText">SYNCHRONIZING DATABASE</div>
+    <div class="loading-bar-container">
+      <div class="loading-bar"></div>
+    </div>
   </div>
 </div>
 
 <div class="container">
-  <div class="core-card">
-    <div class="brand">
-      <h1><i class="fas fa-gavel"></i> WARRANT TRACKER</h1>
-      <div class="sub">// ฐานข้อมูลหมายจับแบบรวมศูนย์</div>
+  <div class="system-card">
+    <div class="header">
+      <div class="system-title">WARRANT TRACKER</div>
+      <div class="system-subtitle">Criminal Warrant Intelligence System</div>
     </div>
 
-    <!-- Profile section (ไม่แสดง userId สาธารณะ) -->
-    <div id="profileContainer" class="profile-panel hidden">
-      <div class="avatar" id="avatarBox"><i class="fas fa-user-secret"></i></div>
-      <div class="profile-text">
-        <h4 id="displayName">—</h4>
+    <!-- Minimalist User Bar -->
+    <div id="profileSection" class="user-bar hidden">
+      <div class="profile-avatar" id="profileAvatar">
+        <i class="fas fa-user"></i>
       </div>
-      <div><span class="badge-online"><i class="fas fa-circle"></i> authenticated</span></div>
+      <span id="userName">-</span>
+      <div class="online-indicator">
+        <span class="online-text">Connected</span>
+        <div class="online-dot"></div>
+      </div>
     </div>
 
-    <!-- toggle ค้นหา -->
-    <div class="search-modes">
-      <button class="mode-btn active" data-type="id13"><i class="fas fa-fingerprint"></i> ID-13</button>
-      <button class="mode-btn" data-type="name"><i class="fas fa-signature"></i> NAME</button>
+    <!-- Toggle Controls -->
+    <div class="search-type-toggle">
+      <button class="toggle-btn active" data-type="id13">
+        <i class="fas fa-id-card"></i> เลขบัตรประชาชน
+      </button>
+      <button class="toggle-btn" data-type="name">
+        <i class="fas fa-users"></i> ชื่อ - นามสกุล
+      </button>
     </div>
 
-    <div class="input-field">
-      <label><i class="fas fa-terminal"></i> INPUT_QUERY</label>
-      <input type="number" id="searchKeyword" placeholder="กรอกเลขบัตรประชาชน 13 หลัก" autocomplete="off">
+    <!-- Main Dynamic Input -->
+    <div class="input-group">
+      <label><i class="fas fa-search"></i> คีย์เวิร์ดตรวจค้น</label>
+      <input type="number" id="searchInput" placeholder="กรอกเลขบัตรประชาชน 13 หลัก" autocomplete="off">
     </div>
 
-    <div class="action-group">
-      <button class="btn btn-primary" id="searchExecute"><i class="fas fa-search"></i> ค้นหา</button>
-      <button class="btn btn-secondary" id="clearExecute"><i class="fas fa-eraser"></i> ล้างข้อมูล</button>
+    <!-- One Master Tactical Button -->
+    <div class="button-group">
+      <button class="search-btn" id="searchBtn">
+        <i class="fas fa-search"></i> ค้นหาหมายจับ
+      </button>
     </div>
 
-    <div id="resultPanel" class="result-area">
-      <div class="info-card">
-        <i class="fas fa-database"></i> กรุณาป้อนข้อมูลหมายจับเพื่อเริ่มค้นหา
+    <!-- Result Console -->
+    <div class="result-section" id="resultArea">
+      <div class="info-box">
+        <i class="fas fa-info-circle"></i> ป้อนเลข 13 หลัก หรือ ชื่อ-นามสกุล เพื่อเริ่มขั้นตอนการตรวจค้นประวัติในสารบบกลาง
       </div>
     </div>
   </div>
 </div>
 
-<!-- hidden element เพื่อ internal reference -->
-<span id="hiddenUserIdRef" style="display:none;"></span>
+<span id="userIdDisplay" class="hidden"></span>
 
 <script src="https://static.line-scdn.net/liff/edge/versions/2.23.0/sdk.js"></script>
 <script>
-  // ---------- CONST (คงเดิม) ----------
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbxQJvzBmxO09-N4smPuJS4JwS5U8rM738fJRkWFXs-r-sVA-myuLPxjIqZJHj5Y_62fEg/exec";
-  const LIFF_ID = "2010276759-IZoVxJjH";
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbxQJvzBmxO09-N4smPuJS4JwS5U8rM738fJRkWFXs-r-sVA-myuLPxjIqZJHj5Y_62fEg/exec";  
+  const LIFF_ID = "2010276759-IZoVxJjH";          
 
   let lineProfile = { userId: '', displayName: '', pictureUrl: '' };
   let currentSearchType = "id13";
+  let isAuthorized = false;
 
-  // ------ UI Helpers ------
-  const loaderOverlay = document.getElementById("globalLoader");
-  const loaderMsgSpan = document.getElementById("loaderMsg");
-  function showLoading(show, text = "กำลังดำเนินการ") {
+  function showLoading(show, customText = null) {
+    const overlay = document.getElementById("loadingOverlay");
+    const textElem = document.getElementById("loadingText");
+    
     if (show) {
-      if (text) loaderMsgSpan.innerText = text;
-      loaderOverlay.classList.add("active");
+      if (customText) textElem.innerText = customText.toUpperCase();
+      overlay.classList.add("active");
     } else {
-      loaderOverlay.classList.remove("active");
-      setTimeout(() => { loaderMsgSpan.innerText = "กำลังเชื่อมต่อระบบรักษาความปลอดภัย"; }, 300);
+      overlay.classList.remove("active");
+      setTimeout(() => { textElem.innerText = "SYNCHRONIZING DATABASE"; }, 300);
     }
   }
 
-  function setResultUI(type, message, data = null) {
-    const panel = document.getElementById("resultPanel");
+  function showResult(type, message, data = null) {
+    const resultDiv = document.getElementById("resultArea");
+    
+    // Clear & restart animations
+    resultDiv.style.animation = 'none';
+    resultDiv.offsetHeight; 
+    resultDiv.style.animation = null; 
+
     if (type === "info") {
-      panel.innerHTML = `<div class="info-card"><i class="fas fa-info-circle"></i> ${message}</div>`;
+      resultDiv.innerHTML = `<div class="info-box"><i class="fas fa-info-circle"></i> ${message}</div>`;
     } else if (type === "error") {
-      panel.innerHTML = `<div class="error-card"><i class="fas fa-skull-crosswalk"></i> ${message}</div>`;
+      resultDiv.innerHTML = `<div class="error-box"><i class="fas fa-exclamation-triangle"></i> ${message}</div>`;
     } else if (type === "success") {
-      panel.innerHTML = `<div class="success-card"><i class="fas fa-check-double"></i> ${message}</div>`;
+      resultDiv.innerHTML = `<div class="success-box"><i class="fas fa-check-circle"></i> ${message}</div>`;
     } else if (type === "table" && data) {
-      if (!data.length) {
-        panel.innerHTML = `<div class="info-card"><i class="fas fa-ban"></i> ไม่พบหมายจับที่ตรงกับคำค้นหา</div>`;
+      if (data.length === 0) {
+        resultDiv.innerHTML = `<div class="info-box"><i class="fas fa-search"></i> ไม่พบประวัติหมายจับสำหรับข้อมูลที่ระบุ</div>`;
         return;
       }
-      let html = `<div class="table-wrapper"><table class="warrant-table">
-        <thead><tr><th>หมายเลขหมายจับ</th><th>ชื่อ-นามสกุล</th><th>สถานะล่าสุด</th><th>ต้นสังกัดชีท</th></tr></thead><tbody>`;
+      
+      let html = `
+        <div class="result-title">
+          <i class="fas fa-database"></i> พบข้อมูลในฐานประวัติ ${data.length} รายการ
+        </div>
+        <div class="table-container">
+          <table class="result-table">
+            <thead>
+              <tr><th>เลขที่หมายจับ</th><th>ชื่อ-สกุล</th><th>สถานะทางการคดี</th></tr>
+            </thead>
+            <tbody>
+      `;
+      
       for (let row of data) {
-        let warrantNo = escapeHtml(row.warrantNo || '-');
-        let fullName = escapeHtml(row.fullName || '-');
-        let statusRaw = escapeHtml(row.status || '-');
-        let sheet = escapeHtml(row.sheetName || '-');
-        // เพิ่มความเท่ให้สถานะ ถ้ามีคำว่า 'จับกุมแล้ว' ใช้สีต่าง
-        let statusClass = (statusRaw.includes('จับกุม') || statusRaw.includes('สำเร็จ')) ? 'status-text' : 'status-text';
-        html += `<tr>
-          <td style="font-weight:700; color:#7AB7EF;">${warrantNo}</td>
-          <td>${fullName}</td>
-          <td class="${statusClass}">${statusRaw}</td>
-          <td><span class="badge-sheet">${sheet}</span></td>
-        </tr>`;
+        let badgeClass = "neutral";
+        if (row.status) {
+          if (row.status.includes('จับกุมแล้ว')) {
+            badgeClass = "success";
+          } else if (row.status.includes('หลบหนี') || row.status.includes('ต้องการตัว') || row.status.includes('อันตราย')) {
+            badgeClass = "danger";
+          }
+        }
+
+        html += `
+          <tr>
+            <td style="font-weight: 700; color: var(--text-main); font-family: monospace;">${escapeHtml(row.warrantNo || '-')}</td>
+            <td>${escapeHtml(row.fullName || '-')}</td>
+            <td>
+              <span class="badge ${badgeClass}">${escapeHtml(row.status || '-')}</span>
+            </td>
+          </tr>
+        `;
       }
+      
       html += `</tbody></table></div>`;
-      panel.innerHTML = html;
-    } else {
-      panel.innerHTML = `<div class="info-card"><i class="fas fa-microchip"></i> ${message || 'พร้อมทำงาน'}</div>`;
+      resultDiv.innerHTML = html;
     }
   }
 
   function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>]/g, function(m) {
-      if(m === '&') return '&amp;';
-      if(m === '<') return '&lt;';
-      if(m === '>') return '&gt;';
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
       return m;
     });
   }
 
-  // debug userid ยังคงไว้ในกรณี error แต่ไม่รก
-  function showDebugUserPanel(message, userIdVal = null) {
-    const panel = document.getElementById("resultPanel");
-    const uid = userIdVal || lineProfile.userId || "ไม่พบ ID";
-    panel.innerHTML = `<div style="background:#0B101F; border-radius: 32px; padding: 24px; border:1px solid #F97316;">
-      <div style="color:#FACC15; margin-bottom: 12px;"><i class="fas fa-shield-haltered"></i> ${message}</div>
-      <div style="background:#03070F; padding: 14px; border-radius: 20px; font-family: monospace; font-size:13px; color:#90CDF4;">📌 USER_ID: <span id="debugUidSpan">${uid}</span></div>
-      <div style="display: flex; gap: 12px; margin-top: 20px;">
-        <button onclick="copyDebugUid()" style="background:#1E2A44; border:none; padding: 8px 18px; border-radius: 28px; color:white; font-weight:600;"><i class="fas fa-copy"></i> คัดลอก ID</button>
-        <button onclick="location.reload()" style="background:#2A3A4F; border:none; padding: 8px 18px; border-radius: 28px; color:white;">⟳ ลองใหม่</button>
+  function showDebugUserId(message, userIdValue = null) {
+    const userIdToShow = userIdValue || lineProfile.userId || "ไม่สามารถดึง User ID ได้";
+    const resultDiv = document.getElementById("resultArea");
+    
+    let debugHtml = `
+      <div class="debug-card">
+        <div style="color: #ef4444; font-weight: 700; margin-bottom: 16px; display: flex; gap: 8px; align-items: center; font-size: 15px;">
+          <i class="fas fa-shield-alt"></i> ${message}
+        </div>
+        <div style="background: #020617; color: #f8fafc; padding: 16px; border-radius: 8px; font-family: monospace; font-size: 13px; word-break: break-all; margin-bottom: 16px; border: 1px solid var(--border-color);">
+          <strong style="color: #fca5a5;">🆔 User ID:</strong><br>
+          <span id="debugUserIdText" style="display: block; margin-top: 6px; color: #93c5fd;">${userIdToShow}</span>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button onclick="copyDebugUserId()" class="search-btn" style="flex: 1; height: 46px; font-size: 13px; background: #334155;">
+            <i class="fas fa-copy"></i> คัดลอก ID
+          </button>
+          <button onclick="location.reload()" class="search-btn" style="flex: 1; height: 46px; font-size: 13px; background: #1e293b;">
+            <i class="fas fa-sync-alt"></i> ลองใหม่
+          </button>
+        </div>
+        <div style="margin-top: 16px; font-size: 12px; color: var(--text-muted); text-align: center;">
+          <i class="fas fa-info-circle"></i> โปรดแจ้งชุดข้อมูลนี้แก่แอดมิน เพื่อลงทะเบียนเข้าใช้ฐานระบบ
+        </div>
       </div>
-      <div style="margin-top: 12px; font-size:12px; color:#A5B4CB;">ส่งข้อมูลนี้ให้ผู้ดูแลระบบเพื่อขอสิทธิ์</div>
-    </div>`;
-    window.copyDebugUid = function() {
-      const textSpan = document.getElementById("debugUidSpan");
-      if(textSpan) navigator.clipboard.writeText(textSpan.innerText).then(() => alert("✅ คัดลอก User ID แล้ว")).catch(() => alert("❌ ไม่สามารถคัดลอก"));
+    `;
+    resultDiv.innerHTML = debugHtml;
+    window.copyDebugUserId = function() {
+      const text = document.getElementById("debugUserIdText").innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("✅ คัดลอกระบบเรียบร้อย");
+      }).catch(() => {
+        const tempInput = document.createElement("input");
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        alert("✅ คัดลอกระบบเรียบร้อย");
+      });
     };
   }
 
-  // ----- GAS caller (logic เดิม แต่ดัด alert เรียบร้อย)
   async function callGas(action, payload = {}) {
-    if (!GAS_URL || !GAS_URL.startsWith("https://script.google.com/macros/s/")) {
-      showDebugUserPanel("การตั้งค่า GAS_URL ไม่ถูกต้อง", "ติดต่อผู้ดูแลระบบ");
-      throw new Error("GAS_URL invalid");
+    if (!GAS_URL || !GAS_URL.startsWith("https://script.google.com/macros/s/") || !GAS_URL.endsWith("/exec")) {
+      showDebugUserId("ความล้มเหลวของการตั้งค่า (GAS_URL)", "กรุณาติดต่อชุดสืบสวนควบคุม");
+      throw new Error("GAS_URL not configured");
     }
     if (!lineProfile.userId) {
-      showDebugUserPanel("ไม่พบข้อมูลการล็อกอิน LINE กรุณาเปิดในแอปพลิเคชัน", "unauth");
-      throw new Error("no userId");
+      showDebugUserId("ระบบตรวจสอบยืนยันตัวตน LINE ล้มเหลว", "เปิดใน LINE แอพพิลเคชันเท่านั้น");
+      throw new Error("Not logged in");
     }
     try {
-      const res = await fetch(GAS_URL, {
+      const response = await fetch(GAS_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
@@ -531,61 +699,56 @@
           ...payload
         })
       });
-      return await res.json();
+      return await response.json();
     } catch(err) {
-      console.error(err);
-      setResultUI("error", "เชื่อมต่อระบบไม่สำเร็จ: " + err.message);
+      console.error("callGas error:", err);
+      showResult("error", "การเชื่อมต่อเครือข่ายล้มเหลว กรุณาดำเนินการตรวจค้นใหม่อีกครั้ง");
       throw err;
     }
   }
 
-  // ค้นหา
   async function performSearch() {
-    const inputElem = document.getElementById("searchKeyword");
-    let keyword = inputElem.value.trim();
+    const searchInput = document.getElementById("searchInput");
+    let keyword = searchInput.value.trim();
+    
     if (!keyword) {
-      setResultUI("error", "⚠️ ระบุข้อมูลที่ต้องการค้นหา");
-      inputElem.focus();
+      showResult("error", "ระบุข้อมูลสืบค้นก่อนดำเนินการ");
+      searchInput.focus();
       return;
     }
+    
     if (currentSearchType === "id13") {
       if (!/^\d{13}$/.test(keyword)) {
-        setResultUI("error", "❌ เลขบัตรประชาชนต้องเป็นตัวเลข 13 หลักเท่านั้น");
+        showResult("error", "ข้อบังคับ: เลขประจำตัวประชาชนต้องครบ 13 หลัก");
         return;
       }
-    } else {
+    } else if (currentSearchType === "name") {
       if (keyword.length < 2) {
-        setResultUI("error", "❌ กรุณากรอกชื่ออย่างน้อย 2 ตัวอักษร");
+        showResult("error", "ข้อบังคับ: ต้องระบุชื่ออย่างน้อย 2 ตัวอักษร");
         return;
       }
     }
-    showLoading(true, "กำลังตรวจสอบฐานข้อมูล...");
+    
+    showLoading(true, "Querying Database Central...");
     try {
       const result = await callGas("search", {
         searchType: currentSearchType,
         keyword: keyword
       });
+      
       if (result && result.success === false) {
-        setResultUI("error", result.message || "ไม่พบข้อมูลหรือสิทธิ์ไม่เพียงพอ");
+        showResult("error", result.message || "เกิดความผิดพลาดในการเข้าถึงสารบบ");
       } else {
-        setResultUI("table", "", result.data || []);
-        // ✅ เคลียร์ช่องค้นหาหลังเสร็จ (UX สะอาด)
-        inputElem.value = "";
+        showResult("table", "", result.data || []);
       }
-    } catch(e) {
-      setResultUI("error", "เกิดข้อผิดพลาดระหว่างค้นหา");
+    } catch(err) {
+      console.error(err);
     } finally {
       showLoading(false);
     }
   }
 
-  function clearSearch() {
-    document.getElementById("searchKeyword").value = "";
-    setResultUI("info", "🧹 เคลียร์ค่าเรียบร้อย พร้อมเริ่มค้นหาใหม่");
-  }
-
-  // ----- LIFF Init + profile UI (ไม่โชว์ userid)
-  function initLiffFlow() {
+  function initLiff() {
     return new Promise((resolve, reject) => {
       liff.init({ liffId: LIFF_ID }, () => {
         if (liff.isLoggedIn()) {
@@ -593,38 +756,50 @@
             lineProfile.userId = profile.userId;
             lineProfile.displayName = profile.displayName;
             lineProfile.pictureUrl = profile.pictureUrl || "";
-            // อัปเดต UI โปรไฟล์ (ไม่แสดง userId ที่หน้า)
-            document.getElementById("displayName").innerText = profile.displayName;
-            const avatarContainer = document.getElementById("avatarBox");
+            
+            document.getElementById("userName").innerText = profile.displayName;
+            
+            const hiddenUserIdSpan = document.getElementById("userIdDisplay");
+            if(hiddenUserIdSpan) hiddenUserIdSpan.innerText = profile.userId;
+            
+            const avatarDiv = document.getElementById("profileAvatar");
             if (profile.pictureUrl) {
-              avatarContainer.innerHTML = `<img src="${profile.pictureUrl}" style="width:100%; height:100%; object-fit:cover;">`;
+              avatarDiv.innerHTML = `<img src="${profile.pictureUrl}" alt="Profile">`;
             } else {
-              avatarContainer.innerHTML = `<i class="fas fa-user-astronaut"></i>`;
+              avatarDiv.innerHTML = `<i class="fas fa-user"></i>`;
             }
-            document.getElementById("profileContainer").classList.remove("hidden");
-            document.getElementById("hiddenUserIdRef").innerText = profile.userId; // เก็บไว้ใช้ debug ถ้าจำเป็น
+            document.getElementById("profileSection").classList.remove("hidden");
             resolve(true);
-          }).catch(err => reject(err));
+          }).catch(err => {
+            console.error("getProfile error:", err);
+            reject(err);
+          });
         } else {
           liff.login();
-          reject(new Error("login required"));
+          reject(new Error("Need login"));
         }
-      }, err => reject(err));
+      }, err => {
+        console.error("liff.init error:", err);
+        reject(err);
+      });
     });
   }
 
-  // ----- DOM event bindings -----
-  document.getElementById("searchExecute").addEventListener("click", performSearch);
-  document.getElementById("clearExecute").addEventListener("click", clearSearch);
-  document.getElementById("searchKeyword").addEventListener("keypress", (e) => { if(e.key === "Enter") performSearch(); });
-
-  // toggle mode
-  document.querySelectorAll(".mode-btn").forEach(btn => {
+  // Event Listeners
+  document.getElementById("searchBtn").addEventListener("click", performSearch);
+  
+  document.getElementById("searchInput").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") performSearch();
+  });
+  
+  document.querySelectorAll(".toggle-btn").forEach(btn => {
     btn.addEventListener("click", function() {
-      document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".toggle-btn").forEach(b => b.classList.remove("active"));
       this.classList.add("active");
+      
       currentSearchType = this.getAttribute("data-type");
-      const input = document.getElementById("searchKeyword");
+      const input = document.getElementById("searchInput");
+      
       if (currentSearchType === "id13") {
         input.type = "number";
         input.inputMode = "numeric";
@@ -632,24 +807,24 @@
       } else {
         input.type = "text";
         input.inputMode = "text";
-        input.placeholder = "ชื่อ-สกุล (เช่น  สมชาย ใจดี)";
+        input.placeholder = "กรอกชื่อ-สกุล (เช่น สมชาย จริงใจ)";
       }
-      input.value = "";
+      
+      input.value = ""; // Auto clean form when mode switches as requested
       input.focus();
     });
   });
 
-  // startup
+  // Init Application
   window.addEventListener("DOMContentLoaded", async () => {
-    showLoading(true, "กำลังตรวจสอบสิทธิ์ LINE");
     try {
-      await initLiffFlow();
-      setResultUI("info", "✔ ระบบยืนยันตัวตนสำเร็จ • พร้อมค้นหาหมายจับ");
+      await initLiff();
+      showResult("info", "ฐานระบบตำรวจพร้อมสืบค้นประวัติระบุตัวตนกลาง");
     } catch (err) {
-      console.error(err);
-      showDebugUserPanel("ไม่สามารถเชื่อมต่อกับ LINE ได้ กรุณาเปิดลิงก์นี้ผ่านแอป LINE", "error_auth");
+      console.error("Init error:", err);
+      showDebugUserId("การเชื่อมต่อฐานข้อมูลความมั่นคงจำกัดสิทธิ์", "กรุณาลงทะเบียนผ่านเบราว์เซอร์ผู้พิทักษ์สันติราษฎร์");
     } finally {
-      setTimeout(() => showLoading(false), 700);
+      setTimeout(() => showLoading(false), 800);
     }
   });
 </script>
