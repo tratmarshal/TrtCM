@@ -568,30 +568,36 @@
 
   // เรียก GAS
   async function callGas(action, payload = {}) {
-    if (!GAS_URL || !GAS_URL.startsWith("https://script.google.com/macros/s/") || !GAS_URL.endsWith("/exec")) {
-      showDebugUserId("ยังไม่ได้ตั้งค่า GAS_URL กรุณาติดต่อแอดมิน", "กรุณาตั้งค่า GAS_URL");
-      throw new Error("GAS_URL not configured");
-    }
-    
-    if (!lineProfile.userId) {
-      showDebugUserId("ยังไม่ Login LINE หรือไม่ได้รับอนุญาต", "กรุณา Login LINE ก่อน");
-      throw new Error("Not logged in");
-    }
-    
-  // ✅ สร้าง output และส่งกลับเลย ไม่ต้องใส่ setHeader แล้วครับ
-  const output = ContentService.createTextOutput(JSON.stringify(result));
-  output.setMimeType(ContentService.MimeType.JSON);
-  
-  return output;
-}
-      return await response.json();
-      
-    } catch(err) {
-      console.error("callGas error:", err);
-      showResult("error", "ไม่สามารถเชื่อมต่อระบบได้: " + err.message);
-      throw err;
-    }
+  if (!GAS_URL || !GAS_URL.startsWith("https://script.google.com/macros/s/") || !GAS_URL.endsWith("/exec")) {
+    showDebugUserId("ยังไม่ได้ตั้งค่า GAS_URL กรุณาติดต่อแอดมิน", "กรุณาตั้งค่า GAS_URL");
+    throw new Error("GAS_URL not configured");
   }
+  
+  if (!lineProfile.userId) {
+    showDebugUserId("ยังไม่ Login LINE หรือไม่ได้รับอนุญาต", "กรุณา Login LINE ก่อน");
+    throw new Error("Not logged in");
+  }
+  
+  try {
+    const response = await fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: action,
+        userId: lineProfile.userId,
+        displayName: lineProfile.displayName,
+        ...payload
+      })
+    });
+    
+    return await response.json();
+    
+  } catch(err) {
+    console.error("callGas error:", err);
+    showResult("error", "ไม่สามารถเชื่อมต่อระบบได้: " + err.message);
+    throw err;
+  }
+}
 
   // ค้นหา
   async function performSearch() {
