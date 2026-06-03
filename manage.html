@@ -295,4 +295,201 @@
       <option>เสร็จสิ้น</option>
     </select>
     <button id="confirmEditBtn" style="background:#3b82f6;color:white;">บันทึก</button>
-    <button id="closeEditModalBtn" style="background:#e2e
+    <button id="closeEditModalBtn" style="background:#e2e8f0;">ยกเลิก</button>
+  </div>
+</div>
+
+<script src="https://static.line-scdn.net/liff/edge/versions/2.23.0/sdk.js"></script>
+<script>
+  // ========== CONFIG ==========
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbxQJvzBmxO09-N4smPuJS4JwS5U8rM738fJRkWFXs-r-sVA-myuLPxjIqZJHj5Y_62fEg/exec";
+  const LIFF_ID = "2010276759-IZoVxJjH";
+  // ============================
+
+  let lineProfile = { userId: '', displayName: '', pictureUrl: '' };
+  let currentEditRowId = null;
+
+  function showLoading(show) {
+    const overlay = document.getElementById("loadingOverlay");
+    overlay.style.display = show ? "flex" : "none";
+  }
+
+  function showDebugUserId(message, userIdValue) {
+    const container = document.getElementById("pendingList");
+    const userIdToShow = userIdValue || lineProfile.userId || "ไม่ทราบ";
+    container.innerHTML = `
+      <div style="background:#fef3c7;border-radius:24px;padding:20px;">
+        <div style="color:#92400e;font-weight:600;">⚠️ ${message}</div>
+        <div style="background:#1f2937;color:#10b981;padding:16px;border-radius:16px;font-family:monospace;margin:12px 0;">
+          User ID: ${userIdToShow}
+        </div>
+        <button onclick="navigator.clipboard.writeText('${userIdToShow}')" style="background:#f59e0b;border:none;padding:10px;border-radius:40px;cursor:pointer;">📋 คัดลอก</button>
+        <button onclick="location.reload()" style="background:#6b7280;border:none;padding:10px;border-radius:40px;cursor:pointer;">⟳ ลองใหม่</button>
+      </div>
+    `;
+  }
+
+  async function callGas(action, payload = {}) {
+    if (!GAS_URL || GAS_URL === "YOUR_GAS_WEBAPP_URL_HERE") {
+      showDebugUserId("ยังไม่ได้ตั้งค่า GAS_URL", "");
+      throw new Error("GAS_URL not configured");
+    }
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action, userId: lineProfile.userId, displayName: lineProfile.displayName, ...payload })
+    });
+    return await res.json();
+  }
+
+  async function loadPending() {
+    const container = document.getElementById("pendingList");
+    container.innerHTML = '<div class="info-box"><i class="fas fa-spinner fa-pulse"></i> กำลังโหลดรายการค้าง...</div>';
+    
+    try {
+      const result = await callGas("getPending");
+      if (!result.success) {
+        if (result.error === "Unauthorized user") {
+          showDebugUserId("คุณไม่มีสิทธิ์ใช้งาน", lineProfile.userId);
+        } else {
+          container.innerHTML = `<div class="error-box">❌ ${result.error}</div>`;
+        }
+        return;
+      }
+      
+      const list = result.data || [];
+      if (list.length === 0) {
+        container.innerHTML = '<div class="info-box"><i class="fas fa-check-circle"></i> ไม่มีรายการค้าง</div>';
+        return;
+      }
+      
+      let html = '<div class="table-wrapper"><table><thead><tr><th>เลข 13 หลัก</th><th>ชื่อ-สกุล</th><th>เหตุผล</th><th>สถานะ</th><th></th></tr></thead><tbody>';
+      for (let item of list) {
+        let statusClass = "status-pending";
+        if (item.status === "เสร็จสิ้น") statusClass = "status-done";
+        else if (item.status.includes("รอ")) statusClass = "status-progress";
+        
+        html += `
+          <tr>
+            <td>${escapeHtml(item.id13)}</td>
+            <td>${escapeHtml(item.fullName)}</td>
+            <td>${escapeHtml(item.reason)}</td>
+            <td><span class="status-chip ${statusClass}">${escapeHtml(item.status)}</span></td>
+            <td><button class="btn-edit" data-row="${item.rowId}"><i class="fas fa-edit"></i> แก้ไข</button></td>
+          </tr>
+        `;
+      }
+      html += '</tbody></table></div>';
+      container.innerHTML = html;
+      
+      document.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentEditRowId = btn.getAttribute('data-row');
+          document.getElementById("editModal").style.display = "flex";
+        });
+      });
+      
+    } catch(err) {
+      container.innerHTML = `<div class="error-box">❌ ${err.message}</div>`;
+    }
+  }
+
+  async function addProcess() {
+    const id13 = document.getElementById("modalId13").value.trim();
+    const reason = document.getElementById("modalReason").value.trim();
+    
+    if (!id13 || !/^\d{13}$/.test(id13)) {
+      alert("เลข 13 หลักไม่ถูกต้อง (ต้องเป็นตัวเลข 13 ตัว)");
+      return;
+    }
+    if (!reason) {
+      alert("กรุณาใส่เหตุผล");
+      return;
+    }
+    
+    showLoading(true);
+    try {
+      const result = await callGas("addProcess", { id13, reason });
+      if (result.success) {
+        document.getElementById("addModal").style.display = "none";
+        document.getElementById("modalId13").value = "";
+        document.getElementById("modalReason").value = "";
+        await loadPending();
+        alert("✅ เพิ่มรายการเรียบร้อย");
+      } else {
+        alert("❌ " + (result.error || "เพิ่มไม่สำเร็จ"));
+      }
+    } catch(err) {
+      alert("เกิดข้อผิดพลาด: " + err.message);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  async function updateStatus() {
+    if (!currentEditRowId) return;
+    const newStatus = document.getElementById("editStatusSelect").value;
+    
+    showLoading(true);
+    try {
+      const result = await callGas("updateStatus", { rowId: currentEditRowId, newStatus });
+      if (result.success) {
+        document.getElementById("editModal").style.display = "none";
+        await loadPending();
+        alert("✅ อัปเดตสถานะเรียบร้อย");
+      } else {
+        alert("❌ " + (result.error || "อัปเดตไม่สำเร็จ"));
+      }
+    } catch(err) {
+      alert("เกิดข้อผิดพลาด: " + err.message);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+
+  function initLiff() {
+    return new Promise((resolve, reject) => {
+      liff.init({ liffId: LIFF_ID }, () => {
+        if (liff.isLoggedIn()) {
+          liff.getProfile().then(profile => {
+            lineProfile.userId = profile.userId;
+            lineProfile.displayName = profile.displayName;
+            lineProfile.pictureUrl = profile.pictureUrl || "";
+            document.getElementById("userName").innerText = profile.displayName;
+            document.getElementById("userIdDisplay").innerText = profile.userId;
+            const avatarDiv = document.getElementById("profileAvatar");
+            if (profile.pictureUrl) avatarDiv.innerHTML = `<img src="${profile.pictureUrl}">`;
+            else avatarDiv.innerHTML = `<i class="fas fa-user"></i>`;
+            document.getElementById("profileSection").classList.remove("hidden");
+            resolve();
+          }).catch(reject);
+        } else {
+          liff.login();
+          reject(new Error("Need login"));
+        }
+      }, reject);
+    });
+  }
+
+  document.getElementById("addProcessBtn").onclick = () => document.getElementById("addModal").style.display = "flex";
+  document.getElementById("closeModalBtn").onclick = () => document.getElementById("addModal").style.display = "none";
+  document.getElementById("closeEditModalBtn").onclick = () => document.getElementById("editModal").style.display = "none";
+  document.getElementById("confirmAddBtn").onclick = addProcess;
+  document.getElementById("confirmEditBtn").onclick = updateStatus;
+
+  window.addEventListener("DOMContentLoaded", async () => {
+    showLoading(true);
+    try {
+      await initLiff();
+      await loadPending();
+    } catch(err) {
+      showDebugUserId("เชื่อมต่อ LINE ไม่สำเร็จ", "");
+    } finally {
+      showLoading(false);
+    }
+  });
+</script>
+</body>
+</html>
