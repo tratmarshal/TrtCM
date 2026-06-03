@@ -184,18 +184,76 @@
     let userId = null;
     
     // ฟังก์ชันเริ่มต้น LIFF
-    async function initLiff() {
-        await liff.init({ liffId: LIFF_ID });
-        if (!liff.isLoggedIn()) {
-            liff.login();
+        async function initLiff() {
+        try {
+            await liff.init({ liffId: LIFF_ID });
+            
+            // ตรวจสอบว่า LIFF init สำเร็จไหม
+            if (!liff.isLoggedIn()) {
+                liff.login();
+                return false;
+            }
+            
+            // ดึงข้อมูลผู้ใช้
+            const profile = await liff.getProfile();
+            userId = profile.userId;
+            accessToken = liff.getAccessToken();
+            console.log("Login success:", userId);
+            return true;
+            
+        } catch(error) {
+            // 🔴 ถ้าเชื่อมต่อ LINE ไม่ได้ ให้แสดง User ID (ถ้ามี)
+            console.error("LIFF Error:", error);
+            showUserIdDebug("เชื่อมต่อ LINE ไม่สำเร็จ", error);
             return false;
         }
-        // ดึงข้อมูลผู้ใช้
-        const profile = await liff.getProfile();
-        userId = profile.userId;
-        accessToken = liff.getAccessToken();
-        console.log("Login success:", userId);
-        return true;
+    }
+    
+    // ✅ ฟังก์ชันใหม่: แสดง User ID เพื่อแจ้งแอดมิน
+    function showUserIdDebug(message, error = null) {
+        let debugHtml = `
+            <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 16px; padding: 20px; margin: 20px 0;">
+                <div style="color: #856404; font-weight: bold; margin-bottom: 12px;">
+                    ⚠️ ${message}
+                </div>
+                <div style="background: #1e1e2f; color: #50fa7b; padding: 16px; border-radius: 12px; font-family: monospace; font-size: 13px; word-break: break-all;">
+                    <strong>🔍 ข้อมูลสำหรับแอดมิน:</strong><br>
+                    User ID ของคุณ: <span style="color: #ffb86c; font-weight: bold;" id="debugUserId">กำลังโหลด...</span><br>
+                    <span style="font-size: 12px; color: #888;">📌 กรุณาส่ง User ID นี้ให้แอดมินเพื่อขอสิทธิ์เข้าใช้งาน</span>
+                </div>
+                <div style="margin-top: 12px;">
+                    <button onclick="copyDebugUserId()" style="background: #ffc107; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">📋 คัดลอก User ID</button>
+                    <button onclick="location.reload()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">⟳ ลองใหม่</button>
+                </div>
+            </div>
+        `;
+        
+        // แสดงผลตรง resultArea
+        const resultDiv = document.getElementById("resultArea");
+        if (resultDiv) {
+            resultDiv.innerHTML = debugHtml;
+        }
+        
+        // พยายามดึง User ID จาก LIFF (ถ้ายังพอมี)
+        if (liff && liff.isLoggedIn && liff.isLoggedIn()) {
+            liff.getProfile().then(profile => {
+                document.getElementById("debugUserId").innerText = profile.userId;
+            }).catch(() => {
+                document.getElementById("debugUserId").innerText = "ไม่สามารถดึง User ID ได้ (ยังไม่ได้ Login LINE)";
+            });
+        } else {
+            document.getElementById("debugUserId").innerText = "ไม่สามารถดึง User ID ได้ (กรุณา Login LINE ก่อน)";
+        }
+    }
+    
+    function copyDebugUserId() {
+        const userIdText = document.getElementById("debugUserId").innerText;
+        if (userIdText && userIdText !== "กำลังโหลด...") {
+            navigator.clipboard.writeText(userIdText);
+            alert("✅ คัดลอก User ID แล้ว: " + userIdText);
+        } else {
+            alert("❌ ไม่มี User ID ให้คัดลอก");
+        }
     }
     
     // ฟังก์ชันเรียก Google Apps Script
